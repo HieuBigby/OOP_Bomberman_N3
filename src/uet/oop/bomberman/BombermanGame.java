@@ -88,3 +88,4 @@ public class BombermanGame extends Application {
         entities.forEach(g -> g.render(gc));
     }
 }
+
