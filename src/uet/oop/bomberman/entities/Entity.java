@@ -1,10 +1,8 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
 
 public abstract class Entity {
@@ -15,12 +13,29 @@ public abstract class Entity {
     protected int y;
 
     protected Image img;
+    public ImageView collideBox;
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
     public Entity( int xUnit, int yUnit, Image img) {
         this.x = xUnit * Sprite.SCALED_SIZE;
         this.y = yUnit * Sprite.SCALED_SIZE;
         this.img = img;
+        collideBox = new ImageView(img);
+        setCollideBox(this.x, this.y);
+    }
+
+    public void setCollideBox(double x, double y)
+    {
+        this.collideBox.setX(x);
+        this.collideBox.setY(y);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public void render(GraphicsContext gc) {
