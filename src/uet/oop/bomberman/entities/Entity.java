@@ -37,9 +37,20 @@ public abstract class Entity {
     public int getY() {
         return y;
     }
-
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
     public abstract void update();
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
+    public void move(int dx, int dy) {
+
+        this.x += dx;
+        this.y += dy;
+
+        setCollideBox(this.x + 1, this.y + 1);
+    }
 }
