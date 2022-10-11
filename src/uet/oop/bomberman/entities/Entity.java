@@ -5,6 +5,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.awt.*;
+
 public abstract class Entity {
     //Tọa độ X tính từ góc trái trên trong Canvas
     protected int x;
@@ -31,6 +33,13 @@ public abstract class Entity {
     {
         this.collideBox.setX(x);
         this.collideBox.setY(y);
+    }
+
+    public BoxPos getCenterBoxPos()
+    {
+//        System.out.println(this.collideBox.getBoundsInLocal().getWidth());
+        return new BoxPos((int) (this.x + this.collideBox.getBoundsInLocal().getWidth() / 2),
+                (int) (this.y + this.collideBox.getBoundsInLocal().getHeight() / 2));
     }
 
     public int getX() {
@@ -103,5 +112,22 @@ public abstract class Entity {
         goRight = true;
         goDown = false;
         goUp = false;
+    }
+
+    public class BoxPos{
+        int x, y;
+
+        public BoxPos(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public String toString() {
+            return "BoxPos{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
+        }
     }
 }

@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -32,6 +33,8 @@ public class BombermanGame extends Application {
     private List<Entity> stillObjects = new ArrayList<>();
 
     Bomber bomberman;
+    private int count = 0;
+
 
 
     public static void main(String[] args) {
@@ -63,6 +66,7 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
+
                 render();
                 update();
                 moveHandler(bomberman, BOMBER_SPEED, bomberman.goUp, bomberman.goDown, bomberman.goLeft, bomberman.goRight);
@@ -221,6 +225,7 @@ public class BombermanGame extends Application {
     public void update() {
         entities.forEach(Entity::update);
         balloons.forEach(Balloon::update);
+
         for(int i=0; i<balloons.size(); i++){
             if(i % 2 ==0){
                 moveBalloon1(balloons.get(i));
