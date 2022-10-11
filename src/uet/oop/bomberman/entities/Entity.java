@@ -8,9 +8,12 @@ import uet.oop.bomberman.graphics.Sprite;
 public abstract class Entity {
     //Tọa độ X tính từ góc trái trên trong Canvas
     protected int x;
-
     //Tọa độ Y tính từ góc trái trên trong Canvas
     protected int y;
+    public int state = 0;
+
+    public boolean goUp, goDown, goLeft = true, goRight;
+
 
     protected Image img;
     public ImageView collideBox;
@@ -42,6 +45,10 @@ public abstract class Entity {
     }
     public abstract void update();
 
+    public Image getImg() {
+        return img;
+    }
+
     public void setImg(Image img) {
         this.img = img;
     }
@@ -52,5 +59,49 @@ public abstract class Entity {
         this.y += dy;
 
         setCollideBox(this.x + 1, this.y + 1);
+    }
+
+    public boolean isGoUp() {
+        return goUp;
+    }
+
+    public void setGoUp() {
+        goLeft = false;
+        goRight = false;
+        goDown = false;
+        goUp = true;
+    }
+
+    public boolean isGoDown() {
+        return goDown;
+    }
+
+    public void setGoDown() {
+        goLeft = false;
+        goRight = false;
+        goDown = true;
+        goUp = false;
+    }
+
+    public boolean isGoLeft() {
+        return goLeft;
+    }
+
+    public void setGoLeft() {
+        goLeft = true;
+        goRight = false;
+        goDown = false;
+        goUp = false;
+    }
+
+    public boolean isGoRight() {
+        return goRight;
+    }
+
+    public void setGoRight() {
+        goLeft = false;
+        goRight = true;
+        goDown = false;
+        goUp = false;
     }
 }

@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -23,15 +22,15 @@ public class BombermanGame extends Application {
 //    public static final int WIDTH = 20;
 //    public static final int HEIGHT = 15;
     public static final int BOMBER_SPEED = 3;
-    public static final int BALlOON_SPEED = 2;
-    
+    public static final int BALlOON_SPEED = 1;
+    // dem so lan ham chay
+    public static int countMethodTime = 0;
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
     private List<Balloon> balloons = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
 
-    boolean goUp, goDown, goRight, goLeft;
     Bomber bomberman;
 
 
@@ -61,17 +60,16 @@ public class BombermanGame extends Application {
         stage.show();
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
-
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 render();
                 update();
-                moveHandler(bomberman, BOMBER_SPEED, goUp, goDown, goLeft, goRight);
+                moveHandler(bomberman, BOMBER_SPEED, bomberman.goUp, bomberman.goDown, bomberman.goLeft, bomberman.goRight);
                 for (Balloon balloon : balloons) {
                     moveHandler(balloon, BALlOON_SPEED,
-                            balloon.goUpBalloon, balloon.goDownBalloon,
-                            balloon.goLeftBalloon, balloon.goRightBalloon);
+                            balloon.goUp, balloon.goDown,
+                            balloon.goLeft, balloon.goRight);
                 }
             }
         };
@@ -91,6 +89,7 @@ public class BombermanGame extends Application {
             else {
                 entity.setCollideBox(lastX, lastY);
             }
+
         }
         if (Down){
             entity.setCollideBox(lastX, lastY + speed);
@@ -116,27 +115,27 @@ public class BombermanGame extends Application {
                 entity.setCollideBox(lastX, lastY);
             }
         }
-
         entity.move(dx, dy);
+        animation(entity);
     }
 
     // Cài đặt input
     public void setInput(Scene scene){
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
-                case W:    goUp = true; break;
-                case S:  goDown = true; break;
-                case A:  goLeft = true; break;
-                case D: goRight = true; break;
+                case W:    bomberman.setGoUp(); break;
+                case S:  bomberman.setGoDown(); break;
+                case A:  bomberman.setGoLeft(); break;
+                case D: bomberman.setGoRight(); break;
             }
         });
 
         scene.setOnKeyReleased(event -> {
             switch (event.getCode()) {
-                case W:    goUp = false; break;
-                case S:  goDown = false; break;
-                case A:  goLeft = false; break;
-                case D: goRight = false; break;
+                case W:    bomberman.goUp = false; break;
+                case S:  bomberman.goDown = false; break;
+                case A:  bomberman.goLeft = false; break;
+                case D: bomberman.goRight = false; break;
             }
         });
     }
@@ -175,26 +174,30 @@ public class BombermanGame extends Application {
     }
     // tạo move cho Ballon kiểu đi vòng quanh
     public void moveBalloon1(Balloon balloon) {
-            if(balloon.isGoLeftBalloon() && balloon.collision) {
+            if(balloon.isGoLeft() && balloon.collision) {
                 balloon.setGoDown();
             }else
-            if(balloon.isGoDownBalloon()&& balloon.collision){
+            if(balloon.isGoDown()&& balloon.collision){
                 balloon.setGoRight();
+                balloon.setImg(Sprite.balloom_right1.getFxImage());
             } else
-            if(balloon.isGoRightBalloon()&& balloon.collision){
+            if(balloon.isGoRight()&& balloon.collision){
                 balloon.setGoUp();
             }else
-            if(balloon.isGoUpBalloon()&& balloon.collision){
+            if(balloon.isGoUp()&& balloon.collision){
                 balloon.setGoLeft();
+                balloon.setImg(Sprite.balloom_left1.getFxImage());
             }
     }
     // tạo move cho Balloon kiểu left <-> right
     public void moveBalloon2(Balloon balloon) {
-        if(balloon.isGoLeftBalloon() && balloon.collision) {
+        if(balloon.isGoLeft() && balloon.collision) {
             balloon.setGoRight();
+            balloon.setImg(Sprite.balloom_right1.getFxImage());
         }else
-        if(balloon.isGoRightBalloon()&& balloon.collision){
+        if(balloon.isGoRight()&& balloon.collision){
             balloon.setGoLeft();
+            balloon.setImg(Sprite.balloom_left1.getFxImage());
         }
     }
 
@@ -217,6 +220,7 @@ public class BombermanGame extends Application {
 
     public void update() {
         entities.forEach(Entity::update);
+        balloons.forEach(Balloon::update);
         for(int i=0; i<balloons.size(); i++){
             if(i % 2 ==0){
                 moveBalloon1(balloons.get(i));
@@ -233,5 +237,56 @@ public class BombermanGame extends Application {
         entities.forEach(g -> g.render(gc));
         balloons.forEach(g -> g.render(gc));
     }
-}
+    public void animation(Entity entity){
+        countMethodTime ++;
+        if(countMethodTime % 30 == 1){
+            entity.state ++;
+        }
+        if(entity instanceof Bomber) {
+            if(entity.isGoLeft()){
+                switch(entity.state % 3){
+                    case 0: entity.setImg(Sprite.player_left.getFxImage());
+                    break;
+                    case 1: entity.setImg(Sprite.player_left_1.getFxImage());
+                        break;
+                    case 2: entity.setImg(Sprite.player_left_2.getFxImage());
+                        break;
+                }
+            }
+            if(entity.isGoRight()){
+                switch(entity.state % 3){
+                    case 0: entity.setImg(Sprite.player_right.getFxImage());
+                        break;
+                    case 1: entity.setImg(Sprite.player_right_1.getFxImage());
+                        break;
+                    case 2: entity.setImg(Sprite.player_right_2.getFxImage());
+                        break;
+                }
+            }
+            if(entity.isGoUp()){
+                switch(entity.state % 3){
+                    case 0: entity.setImg(Sprite.player_up.getFxImage());
+                        break;
+                    case 1: entity.setImg(Sprite.player_up_1.getFxImage());
+                        break;
+                    case 2: entity.setImg(Sprite.player_up_2.getFxImage());
+                        break;
+                }
+            }
+            if(entity.isGoDown()){
+                switch(entity.state % 3){
+                    case 0: entity.setImg(Sprite.player_down.getFxImage());
+                        break;
+                    case 1: entity.setImg(Sprite.player_down_1.getFxImage());
+                        break;
+                    case 2: entity.setImg(Sprite.player_down_2.getFxImage());
+                        break;
+                }
+            }
+        }
+
+        }
+
+
+    }
 

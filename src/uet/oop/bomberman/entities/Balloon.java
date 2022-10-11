@@ -2,9 +2,9 @@ package uet.oop.bomberman.entities;
 
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.graphics.Sprite;
 
 public class Balloon extends Entity{
-    public boolean goUpBalloon, goDownBalloon,goLeftBalloon = true, goRightBalloon;
     public boolean collision = false;
     public Balloon(int x, int y, Image img) {
         super(x, y, img);
@@ -16,56 +16,5 @@ public class Balloon extends Entity{
     }
     @Override
     public void update() {
-    }
-    public void move(int dx, int dy) {
-
-        this.x += dx;
-        this.y += dy;
-
-        setCollideBox(this.x + 1, this.y + 1);
-    }
-    public void setGoLeft(){
-        goLeftBalloon = true;
-        goRightBalloon = false;
-        goDownBalloon = false;
-        goUpBalloon = false;
-    }
-    public void setGoRight(){
-        goLeftBalloon = false;
-        goRightBalloon = true;
-        goDownBalloon = false;
-        goUpBalloon = false;
-    }
-
-    public boolean isGoUpBalloon() {
-        return goUpBalloon;
-    }
-
-    public boolean isGoDownBalloon() {
-        return goDownBalloon;
-    }
-
-    public boolean isGoLeftBalloon() {
-        return goLeftBalloon;
-    }
-
-    public boolean isGoRightBalloon() {
-        return goRightBalloon;
-    }
-
-    public void setGoUp(){
-        goLeftBalloon = false;
-        goRightBalloon = false;
-        goDownBalloon = false;
-        goUpBalloon = true;
-    }
-    public void setGoDown(){
-        goLeftBalloon = false;
-        goRightBalloon = false;
-        goDownBalloon = true;
-        goUpBalloon = false;
-    }
-    public void setImage(Image img){
-        super.setImg(img);
     }
 }
