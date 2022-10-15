@@ -6,7 +6,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -24,8 +23,6 @@ public class BombermanGame extends Application {
 //    public static final int HEIGHT = 15;
     public static final int BOMBER_SPEED = 3;
     public static final int BALlOON_SPEED = 1;
-    // dem so lan ham chay
-    public static int countMethodTime = 0;
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
@@ -33,7 +30,6 @@ public class BombermanGame extends Application {
     private List<Entity> stillObjects = new ArrayList<>();
 
     Bomber bomberman;
-    private int count = 0;
 
 
 
@@ -120,7 +116,6 @@ public class BombermanGame extends Application {
             }
         }
         entity.move(dx, dy);
-        animation(entity);
     }
 
     // Cài đặt input
@@ -183,25 +178,21 @@ public class BombermanGame extends Application {
             }else
             if(balloon.isGoDown()&& balloon.collision){
                 balloon.setGoRight();
-                balloon.setImg(Sprite.balloom_right1.getFxImage());
             } else
             if(balloon.isGoRight()&& balloon.collision){
                 balloon.setGoUp();
             }else
             if(balloon.isGoUp()&& balloon.collision){
                 balloon.setGoLeft();
-                balloon.setImg(Sprite.balloom_left1.getFxImage());
             }
     }
     // tạo move cho Balloon kiểu left <-> right
     public void moveBalloon2(Balloon balloon) {
         if(balloon.isGoLeft() && balloon.collision) {
             balloon.setGoRight();
-            balloon.setImg(Sprite.balloom_right1.getFxImage());
         }else
         if(balloon.isGoRight()&& balloon.collision){
             balloon.setGoLeft();
-            balloon.setImg(Sprite.balloom_left1.getFxImage());
         }
     }
 
@@ -242,56 +233,6 @@ public class BombermanGame extends Application {
         entities.forEach(g -> g.render(gc));
         balloons.forEach(g -> g.render(gc));
     }
-    public void animation(Entity entity){
-        countMethodTime ++;
-        if(countMethodTime % 30 == 1){
-            entity.state ++;
-        }
-        if(entity instanceof Bomber) {
-            if(entity.isGoLeft()){
-                switch(entity.state % 3){
-                    case 0: entity.setImg(Sprite.player_left.getFxImage());
-                    break;
-                    case 1: entity.setImg(Sprite.player_left_1.getFxImage());
-                        break;
-                    case 2: entity.setImg(Sprite.player_left_2.getFxImage());
-                        break;
-                }
-            }
-            if(entity.isGoRight()){
-                switch(entity.state % 3){
-                    case 0: entity.setImg(Sprite.player_right.getFxImage());
-                        break;
-                    case 1: entity.setImg(Sprite.player_right_1.getFxImage());
-                        break;
-                    case 2: entity.setImg(Sprite.player_right_2.getFxImage());
-                        break;
-                }
-            }
-            if(entity.isGoUp()){
-                switch(entity.state % 3){
-                    case 0: entity.setImg(Sprite.player_up.getFxImage());
-                        break;
-                    case 1: entity.setImg(Sprite.player_up_1.getFxImage());
-                        break;
-                    case 2: entity.setImg(Sprite.player_up_2.getFxImage());
-                        break;
-                }
-            }
-            if(entity.isGoDown()){
-                switch(entity.state % 3){
-                    case 0: entity.setImg(Sprite.player_down.getFxImage());
-                        break;
-                    case 1: entity.setImg(Sprite.player_down_1.getFxImage());
-                        break;
-                    case 2: entity.setImg(Sprite.player_down_2.getFxImage());
-                        break;
-                }
-            }
-        }
-
-        }
-
 
     }
 
