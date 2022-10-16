@@ -18,8 +18,14 @@ public class Balloon extends Entity{
     public void update() {
         state++;
         if(state > 100) state = 0;
-        Image image = Sprite.movingSprite(Sprite.balloom_left1, Sprite.balloom_left2, Sprite.balloom_left3, state, 50).getFxImage();
-        setImg(image);
+        if(goLeft||goDown){
+            Image image = Sprite.movingSprite(Sprite.balloom_left1, Sprite.balloom_left2, Sprite.balloom_left3, state, 50).getFxImage();
+            setImg(image);
+        }
+        if(goRight||goUp){
+            Image image = Sprite.movingSprite(Sprite.balloom_right1, Sprite.balloom_right2, Sprite.balloom_right3, state, 50).getFxImage();
+            setImg(image);
+        }
 
 
     }
