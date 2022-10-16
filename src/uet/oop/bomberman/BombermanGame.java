@@ -243,5 +243,5 @@ public class BombermanGame extends Application {
         balloons.forEach(g -> g.render(gc));
     }
 
-    }
+}
 

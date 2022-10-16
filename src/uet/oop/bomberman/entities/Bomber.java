@@ -10,7 +10,6 @@ enum AdjacentPos
     UP,
     DOWN
 }
-import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomber extends Entity {
 
@@ -28,22 +27,22 @@ public class Bomber extends Entity {
     public void update() {
         state++;
         if(state > 100) state = 0;
-    if(goLeft){
-        Image image = Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, state, 20).getFxImage();
-        setImg(image);
-    }
-    if(goRight){
-        Image image = Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2, state, 20).getFxImage();
-        setImg(image);
-    }
-    if(goUp){
-        Image image = Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2, state, 20).getFxImage();
-        setImg(image);
-    }
-    if(goDown){
-        Image image = Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2, state, 20).getFxImage();
-        setImg(image);
-    }
+        if(goLeft){
+            Image image = Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, state, 20).getFxImage();
+            setImg(image);
+        }
+        if(goRight){
+            Image image = Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2, state, 20).getFxImage();
+            setImg(image);
+        }
+        if(goUp){
+            Image image = Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2, state, 20).getFxImage();
+            setImg(image);
+        }
+        if(goDown){
+            Image image = Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2, state, 20).getFxImage();
+            setImg(image);
+        }
     }
 
     public void move(int dx, int dy) {
