@@ -6,7 +6,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -28,6 +27,7 @@ public class BombermanGame extends Application {
     public static int countMethodTime = 0;
     private GraphicsContext gc;
     private Canvas canvas;
+    private char[][] map;
     private List<Entity> entities = new ArrayList<>();
     private List<Balloon> balloons = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
@@ -109,6 +109,7 @@ public class BombermanGame extends Application {
                 dx += speed;
             else {
                 entity.setCollideBox(lastX, lastY);
+
             }
         }
         if (Left) {
@@ -149,6 +150,8 @@ public class BombermanGame extends Application {
             currentLevel = scanner.nextInt();
             mapHeight = scanner.nextInt();
             mapWidth = scanner.nextInt();
+            System.out.println("Create map size: " + mapWidth + ", " + mapHeight);
+            map = new char[mapHeight][mapWidth];
             scanner.nextLine();
 
             for(int i = 0; i < mapHeight; i++){
@@ -156,6 +159,7 @@ public class BombermanGame extends Application {
 
                 for(int j = 0; j < line.length(); j++){
                     Character entityName = line.charAt(j);
+                    map[i][j] = entityName;
                     Entity object;
                     if(entityName == '#'){
                         object = new Wall(j, i, Sprite.wall.getFxImage());
@@ -216,8 +220,12 @@ public class BombermanGame extends Application {
                 if(entity instanceof Balloon){
                     ((Balloon) entity).collision = true;
                 }
+                if(entity instanceof Bomber)
+                    ((Bomber) entity).slideWhenCollide(obj, map);
                 return true;
+
             }
+
         }
         return false;
     }
