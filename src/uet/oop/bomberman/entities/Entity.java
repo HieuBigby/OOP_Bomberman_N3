@@ -15,13 +15,14 @@ public abstract class Entity {
     public int state = 0;
 
     public boolean goUp, goDown, goLeft = true, goRight;
-
+    // trạng thái di chuyển
+    public String prev;
 
     protected Image img;
     public ImageView collideBox;
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
-    public Entity( int xUnit, int yUnit, Image img) {
+    public Entity(int xUnit, int yUnit, Image img) {
         this.x = xUnit * Sprite.SCALED_SIZE;
         this.y = yUnit * Sprite.SCALED_SIZE;
         this.img = img;
@@ -29,14 +30,12 @@ public abstract class Entity {
         setCollideBox(this.x, this.y);
     }
 
-    public void setCollideBox(double x, double y)
-    {
+    public void setCollideBox(double x, double y) {
         this.collideBox.setX(x);
         this.collideBox.setY(y);
     }
 
-    public BoxPos getCenterBoxPos()
-    {
+    public BoxPos getCenterBoxPos() {
 //        System.out.println(this.collideBox.getBoundsInLocal().getWidth());
         return new BoxPos((int) (this.x + this.collideBox.getBoundsInLocal().getWidth() / 2),
                 (int) (this.y + this.collideBox.getBoundsInLocal().getHeight() / 2));
@@ -49,9 +48,11 @@ public abstract class Entity {
     public int getY() {
         return y;
     }
+
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
+
     public abstract void update();
 
     public Image getImg() {
@@ -75,6 +76,7 @@ public abstract class Entity {
     }
 
     public void setGoUp() {
+        prev = "Up";
         goLeft = false;
         goRight = false;
         goDown = false;
@@ -86,6 +88,7 @@ public abstract class Entity {
     }
 
     public void setGoDown() {
+        prev = "Down";
         goLeft = false;
         goRight = false;
         goDown = true;
@@ -97,6 +100,7 @@ public abstract class Entity {
     }
 
     public void setGoLeft() {
+        prev = "Left";
         goLeft = true;
         goRight = false;
         goDown = false;
@@ -108,18 +112,27 @@ public abstract class Entity {
     }
 
     public void setGoRight() {
+        prev = "Right";
         goLeft = false;
         goRight = true;
         goDown = false;
         goUp = false;
     }
 
-    public class BoxPos{
+    public class BoxPos {
         int x, y;
 
         public BoxPos(int x, int y) {
             this.x = x;
             this.y = y;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
         }
 
         @Override

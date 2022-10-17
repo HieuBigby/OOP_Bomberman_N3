@@ -21,13 +21,18 @@ public class BombermanGame extends Application {
     public int currentLevel, mapWidth, mapHeight;
 //    public static final int WIDTH = 20;
 //    public static final int HEIGHT = 15;
-    public static final int BOMBER_SPEED = 3;
+    public static final int BOMBER_SPEED = 2;
     public static final int BALlOON_SPEED = 1;
+
+    public static final int ONEAL_SPEED = 1;
     private GraphicsContext gc;
     private Canvas canvas;
     private char[][] map;
+
+    private int[][] mapOneal;
     private List<Entity> entities = new ArrayList<>();
     private List<Balloon> balloons = new ArrayList<>();
+    private List<Oneal> onealList = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
 
     Bomber bomberman;
@@ -71,6 +76,11 @@ public class BombermanGame extends Application {
                     moveHandler(balloon, BALlOON_SPEED,
                             balloon.goUp, balloon.goDown,
                             balloon.goLeft, balloon.goRight);
+                }
+                for (Oneal oneal : onealList) {
+                    moveHandler(oneal, ONEAL_SPEED,
+                            oneal.goUp, oneal.goDown,
+                            oneal.goLeft, oneal.goRight);
                 }
             }
         };
@@ -148,6 +158,7 @@ public class BombermanGame extends Application {
             mapWidth = scanner.nextInt();
             System.out.println("Create map size: " + mapWidth + ", " + mapHeight);
             map = new char[mapHeight][mapWidth];
+            mapOneal = new int[mapHeight][mapWidth];
             scanner.nextLine();
 
             for(int i = 0; i < mapHeight; i++){
@@ -159,15 +170,22 @@ public class BombermanGame extends Application {
                     Entity object;
                     if(entityName == '#'){
                         object = new Wall(j, i, Sprite.wall.getFxImage());
+                        mapOneal[i][j] = 0;
                     }else if(entityName == '*'){
                         object = new Brick(j, i, Sprite.brick.getFxImage());
+                        mapOneal[i][j] = 0;
                     }else{
                         object = new Grass(j, i, Sprite.grass.getFxImage());
+                        mapOneal[i][j] = 1;
                     }
                     stillObjects.add(object);
                     if(entityName == '1'){
                         Balloon balloon = new Balloon(j, i, Sprite.balloom_left1.getFxImage());
                         balloons.add(balloon);
+                    }
+                    if(entityName == '2'){
+                        Oneal oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
+                        onealList.add(oneal);
                     }
                 }
 
@@ -201,6 +219,25 @@ public class BombermanGame extends Application {
         }
     }
 
+    public void moveOneal(Oneal oneal) {
+        int[] start = new int[] {oneal.getCenterBoxPos().getY()/32, oneal.getCenterBoxPos().getX()/32};
+        int[] end = new int[] {bomberman.getCenterBoxPos().getY()/32, bomberman.getCenterBoxPos().getX()/32};
+        int[] result = BFS.shortestPath(mapOneal, start, end);
+        if(!result.equals(start)) {
+            if(result[0] < start[1]) {
+                oneal.setGoLeft();
+            }else
+            if(result[0] > start[1]) {
+                oneal.setGoRight();
+            }else
+            if(result[1] < start[0]) {
+                oneal.setGoUp();
+            }else
+            if(result[1] > start[0]) {
+                oneal.setGoDown();
+            }
+        }
+    }
     // Kiểm tra va chạm giữa bomber và các thực thể khác
     public boolean checkCollision(Entity entity){
         if(entity instanceof Balloon){
@@ -214,6 +251,8 @@ public class BombermanGame extends Application {
                 }
                 if(entity instanceof Bomber)
                     ((Bomber) entity).slideWhenCollide(obj, map);
+                if(entity instanceof Oneal)
+                    ((Oneal) entity).slideWhenCollide(obj, map);
                 return true;
 
             }
@@ -225,14 +264,16 @@ public class BombermanGame extends Application {
     public void update() {
         entities.forEach(Entity::update);
         balloons.forEach(Balloon::update);
-
+        onealList.forEach(Oneal::update);
         for(int i=0; i<balloons.size(); i++){
             if(i % 2 ==0){
                 moveBalloon1(balloons.get(i));
             } else {
                 moveBalloon2(balloons.get(i));
             }
-
+        }
+        for(int i=0; i<onealList.size(); i++){
+            moveOneal(onealList.get(i));
         }
     }
 
@@ -241,6 +282,7 @@ public class BombermanGame extends Application {
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
         balloons.forEach(g -> g.render(gc));
+        onealList.forEach(g -> g.render(gc));
     }
 
 }
