@@ -37,7 +37,6 @@ public class BombermanGame extends Application {
     private char[][] map;
 
     private int[][] mapOneal;
-    private List<Entity> entities = new ArrayList<>();
     private List<Balloon> balloons = new ArrayList<>();
     private List<Oneal> onealList = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
@@ -71,7 +70,6 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        entities.add(bomberman);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -201,50 +199,7 @@ public class BombermanGame extends Application {
             e.printStackTrace();
         }
     }
-    // tạo move cho Ballon kiểu đi vòng quanh
-    public void moveBalloon1(Balloon balloon) {
-            if(balloon.isGoLeft() && balloon.collision) {
-                balloon.setGoDown();
-            }else
-            if(balloon.isGoDown()&& balloon.collision){
-                balloon.setGoRight();
-            } else
-            if(balloon.isGoRight()&& balloon.collision){
-                balloon.setGoUp();
-            }else
-            if(balloon.isGoUp()&& balloon.collision){
-                balloon.setGoLeft();
-            }
-    }
-    // tạo move cho Balloon kiểu left <-> right
-    public void moveBalloon2(Balloon balloon) {
-        if(balloon.isGoLeft() && balloon.collision) {
-            balloon.setGoRight();
-        }else
-        if(balloon.isGoRight()&& balloon.collision){
-            balloon.setGoLeft();
-        }
-    }
 
-    public void moveOneal(Oneal oneal) {
-        int[] start = new int[] {oneal.getCenterBoxPos().getY()/32, oneal.getCenterBoxPos().getX()/32};
-        int[] end = new int[] {bomberman.getCenterBoxPos().getY()/32, bomberman.getCenterBoxPos().getX()/32};
-        int[] result = BFS.shortestPath(mapOneal, start, end);
-        if(!result.equals(start)) {
-            if(result[0] < start[1]) {
-                oneal.setGoLeft();
-            }else
-            if(result[0] > start[1]) {
-                oneal.setGoRight();
-            }else
-            if(result[1] < start[0]) {
-                oneal.setGoUp();
-            }else
-            if(result[1] > start[0]) {
-                oneal.setGoDown();
-            }
-        }
-    }
     // Kiểm tra va chạm giữa bomber và các thực thể khác
     public boolean checkCollision(Mob mob){
         if(mob instanceof Balloon){
@@ -269,25 +224,21 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
-        entities.forEach(Entity::update);
         balloons.forEach(Balloon::update);
         onealList.forEach(Oneal::update);
+        bomberman.update();
         for(int i=0; i<balloons.size(); i++){
-            if(i % 2 ==0){
-                moveBalloon1(balloons.get(i));
-            } else {
-                moveBalloon2(balloons.get(i));
-            }
+            balloons.get(i).moveBalloon(i);
         }
         for (Oneal oneal : onealList) {
-            moveOneal(oneal);
+            oneal.moveOneal(bomberman, mapOneal);
         }
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         stillObjects.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
+        bomberman.render(gc);
         balloons.forEach(g -> g.render(gc));
         onealList.forEach(g -> g.render(gc));
     }

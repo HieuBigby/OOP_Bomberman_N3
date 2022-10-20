@@ -26,7 +26,32 @@ public class Balloon extends Enemy {
             Image image = Sprite.movingSprite(Sprite.balloom_right1, Sprite.balloom_right2, Sprite.balloom_right3, state, 50).getFxImage();
             setImg(image);
         }
-
+    }
+    // tạo move cho Ballon kiểu đi vòng quanh
+    public void moveBalloon(int type) {
+        if(type % 2 == 0){
+            // Go around
+            if(isGoLeft() && collision) {
+                setGoDown();
+            }else
+            if(isGoDown()&& collision){
+                setGoRight();
+            } else
+            if(isGoRight()&& collision){
+                setGoUp();
+            }else
+            if(isGoUp()&& collision){
+                setGoLeft();
+            }
+        }else {
+            // left <-> right
+            if(isGoLeft() && collision) {
+                setGoRight();
+            }else
+            if(isGoRight()&& collision){
+                setGoLeft();
+            }
+        }
 
     }
 
