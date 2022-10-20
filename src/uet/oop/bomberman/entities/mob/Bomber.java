@@ -1,31 +1,52 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.entities.mob;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class Oneal extends Entity {
-    public Oneal(int x, int y, Image img) {
+public class Bomber extends Mob {
+
+    public Bomber(int x, int y, Image img) {
         super(x, y, img);
+
         // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
-        this.collideBox.setFitHeight(25);
-        this.collideBox.setFitWidth(25);
-        //
-        this.setCollideBox(this.x + 1,  this.y + 1);
+        this.collideBox.setFitHeight(26);
+        this.collideBox.setFitWidth(20);
+
+        this.setCollideBox(this.x + 1, this.y + 3);
     }
 
     @Override
     public void update() {
         state++;
         if(state > 100) state = 0;
-        if(goLeft||goDown){
-            Image image = Sprite.movingSprite(Sprite.oneal_left1, Sprite.oneal_left2, Sprite.oneal_left3, state, 50).getFxImage();
+        if(goLeft){
+            Image image = Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, state, 20).getFxImage();
             setImg(image);
         }
-        if(goRight||goUp){
-            Image image = Sprite.movingSprite(Sprite.oneal_right1, Sprite.oneal_right2, Sprite.oneal_right3, state, 50).getFxImage();
+        if(goRight){
+            Image image = Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2, state, 20).getFxImage();
+            setImg(image);
+        }
+        if(goUp){
+            Image image = Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2, state, 20).getFxImage();
+            setImg(image);
+        }
+        if(goDown){
+            Image image = Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2, state, 20).getFxImage();
             setImg(image);
         }
     }
+
+    public void move(int dx, int dy) {
+
+        this.x += dx;
+        this.y += dy;
+
+        setCollideBox(this.x + 1, this.y + 3);
+    }
+
+    // Kiểm tra xem có lối đi trống cho bomber
     public boolean isEmptySpace(BoxPos boxPos, AdjacentPos adjacentPos, char[][] map) {
         if(adjacentPos == AdjacentPos.LEFT){
             boxPos.x = (int) (boxPos.x - collideBox.getFitWidth() / 2) - 1;
@@ -42,8 +63,7 @@ public class Oneal extends Entity {
         if (map == null) {
             return false;
         }
-        return map[normalizedPos.y][normalizedPos.x] != '#'||
-                map[normalizedPos.y][normalizedPos.x] !='*';
+        return map[normalizedPos.y][normalizedPos.x] == ' ';
     }
 
     // Dịch vị trí nhân vật khi va chạm với vật thể khác trong map
@@ -101,5 +121,9 @@ public class Oneal extends Entity {
                 }
             }
         }
+    }
+
+
+    public void setBomb() {
     }
 }

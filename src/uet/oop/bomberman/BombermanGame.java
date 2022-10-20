@@ -8,6 +8,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.mob.Bomber;
+import uet.oop.bomberman.entities.mob.Mob;
+import uet.oop.bomberman.entities.mob.enemy.Balloon;
+import uet.oop.bomberman.entities.mob.enemy.Oneal;
+import uet.oop.bomberman.entities.tile.Brick;
+import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,47 +94,47 @@ public class BombermanGame extends Application {
         timer.start();
     }
 
-    // Xử lý di chuyển Entity
-    public void moveHandler(Entity entity, int speed,boolean Up, boolean Down, boolean Left, boolean Right){
+    // Xử lý di chuyển Mob
+    public void moveHandler(Mob mob, int speed, boolean Up, boolean Down, boolean Left, boolean Right){
         int dx = 0, dy = 0;
-        double lastX = entity.collideBox.getX();
-        double lastY = entity.collideBox.getY();
+        double lastX = mob.collideBox.getX();
+        double lastY = mob.collideBox.getY();
 
         if (Up) {
-            entity.setCollideBox(lastX, lastY - speed);
-            if(!checkCollision(entity))
+            mob.setCollideBox(lastX, lastY - speed);
+            if(!checkCollision(mob))
                 dy -= speed;
             else {
-                entity.setCollideBox(lastX, lastY);
+                mob.setCollideBox(lastX, lastY);
             }
 
         }
         if (Down){
-            entity.setCollideBox(lastX, lastY + speed);
-            if(!checkCollision(entity))
+            mob.setCollideBox(lastX, lastY + speed);
+            if(!checkCollision(mob))
                 dy += speed;
             else {
-                entity.setCollideBox(lastX, lastY);
+                mob.setCollideBox(lastX, lastY);
             }
         }
         if (Right){
-            entity.setCollideBox(lastX  + speed, lastY);
-            if(!checkCollision(entity))
+            mob.setCollideBox(lastX  + speed, lastY);
+            if(!checkCollision(mob))
                 dx += speed;
             else {
-                entity.setCollideBox(lastX, lastY);
+                mob.setCollideBox(lastX, lastY);
 
             }
         }
         if (Left) {
-            entity.setCollideBox(lastX  - speed, lastY);
-            if(!checkCollision(entity))
+            mob.setCollideBox(lastX  - speed, lastY);
+            if(!checkCollision(mob))
                 dx -= speed;
             else {
-                entity.setCollideBox(lastX, lastY);
+                mob.setCollideBox(lastX, lastY);
             }
         }
-        entity.move(dx, dy);
+        mob.move(dx, dy);
     }
 
     // Cài đặt input
@@ -239,20 +246,20 @@ public class BombermanGame extends Application {
         }
     }
     // Kiểm tra va chạm giữa bomber và các thực thể khác
-    public boolean checkCollision(Entity entity){
-        if(entity instanceof Balloon){
-            ((Balloon) entity).collision = false;
+    public boolean checkCollision(Mob mob){
+        if(mob instanceof Balloon){
+            ((Balloon) mob).collision = false;
         }
         for (Entity obj : stillObjects) {
-            if(obj instanceof Grass ) continue;
-            if(entity.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
-                if(entity instanceof Balloon){
-                    ((Balloon) entity).collision = true;
+            if(obj instanceof Grass) continue;
+            if(mob.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+                if(mob instanceof Balloon){
+                    ((Balloon) mob).collision = true;
                 }
-                if(entity instanceof Bomber)
-                    ((Bomber) entity).slideWhenCollide(obj, map);
-                if(entity instanceof Oneal)
-                    ((Oneal) entity).slideWhenCollide(obj, map);
+                if(mob instanceof Bomber)
+                    ((Bomber) mob).slideWhenCollide(obj, map);
+                if(mob instanceof Oneal)
+                    ((Oneal) mob).slideWhenCollide(obj, map);
                 return true;
 
             }
@@ -272,8 +279,8 @@ public class BombermanGame extends Application {
                 moveBalloon2(balloons.get(i));
             }
         }
-        for(int i=0; i<onealList.size(); i++){
-            moveOneal(onealList.get(i));
+        for (Oneal oneal : onealList) {
+            moveOneal(oneal);
         }
     }
 
