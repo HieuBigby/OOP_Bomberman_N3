@@ -77,7 +77,6 @@ public class BFS {
                 int[] result = new int[] {path.get(1).y,path.get(1).x};
                 return result;
             }else if(path.size() == 1){
-                System.out.println("collision");
                 return start;
             }
         }

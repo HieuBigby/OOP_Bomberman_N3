@@ -5,7 +5,6 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Balloon extends Enemy {
-    public boolean collision = false;
     public Balloon(int x, int y, Image img) {
         super(x, y, img);
         // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
