@@ -1,17 +1,19 @@
 package uet.oop.bomberman.entities.mob;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.mob.enemy.Balloon;
 import uet.oop.bomberman.entities.mob.enemy.Oneal;
 import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Item.SpeedItem;
 import uet.oop.bomberman.entities.tile.Tile;
 
 import java.util.ArrayList;
 
 public class Mob extends Entity {
     public boolean collision = false;
-    public boolean goUp, goDown, goLeft = true, goRight;
+    public boolean goUp, goDown, goLeft, goRight;
 
     public Mob(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -72,8 +74,10 @@ public class Mob extends Entity {
             if(obj instanceof Grass) continue;
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
                     collision = true;
-                if(this instanceof Bomber)
+                if(this instanceof Bomber){
                     ((Bomber) this).slideWhenCollide(obj, map);
+                }
+
                 if(this instanceof Oneal)
                     ((Oneal) this).slideWhenCollide(obj, map);
                 return true;

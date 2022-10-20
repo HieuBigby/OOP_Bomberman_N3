@@ -1,8 +1,16 @@
 package uet.oop.bomberman.entities.mob;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.mob.enemy.Oneal;
+import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Item.Item;
+import uet.oop.bomberman.entities.tile.Item.SpeedItem;
+import uet.oop.bomberman.entities.tile.Tile;
 import uet.oop.bomberman.graphics.Sprite;
+
+import java.util.ArrayList;
 
 public class Bomber extends Mob {
 
@@ -45,7 +53,18 @@ public class Bomber extends Mob {
 
         setCollideBox(this.x + 1, this.y + 3);
     }
-
+    // Xử lý bomber ăn item trong map
+    public Item checkUseItem(ArrayList<Item> items){
+        for (Item obj : items) {
+            if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+                if(obj instanceof SpeedItem){
+                    BombermanGame.BOMBER_SPEED = 3;
+                }
+                return obj;
+            }
+        }
+        return null;
+    }
     // Kiểm tra xem có lối đi trống cho bomber
     public boolean isEmptySpace(BoxPos boxPos, AdjacentPos adjacentPos, char[][] map) {
         if(adjacentPos == AdjacentPos.LEFT){

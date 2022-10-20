@@ -12,6 +12,7 @@ public class Balloon extends Enemy {
         this.collideBox.setFitWidth(25);
         //
         this.setCollideBox(this.x + 1,  this.y + 1);
+        goLeft = true;
     }
     @Override
     public void update() {
