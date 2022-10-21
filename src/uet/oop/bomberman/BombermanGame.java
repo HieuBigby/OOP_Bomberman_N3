@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.mob.Bomber;
-import uet.oop.bomberman.entities.mob.Mob;
 import uet.oop.bomberman.entities.mob.enemy.Balloon;
 import uet.oop.bomberman.entities.mob.enemy.Doll;
 import uet.oop.bomberman.entities.mob.enemy.Oneal;
@@ -45,6 +44,7 @@ public class BombermanGame extends Application {
     private char[][] map;
 
     private int[][] mapOneal;
+    private  List<Bomb> bombs = new ArrayList<>();
     private List<Balloon> balloons = new ArrayList<>();
     private List<Oneal> onealList = new ArrayList<>();
     private List<Doll> dolls = new ArrayList<>();
@@ -63,6 +63,9 @@ public class BombermanGame extends Application {
     public void start(Stage stage) {
         // Tạo map
         createMap();
+
+        Map.Instance.entityList = this.tiles;
+//        Map.Instance.getEntityAt(0, 0);
 
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * mapWidth, Sprite.SCALED_SIZE * mapHeight);
@@ -103,6 +106,7 @@ public class BombermanGame extends Application {
                 case S:  bomberman.setGoDown(); break;
                 case A:  bomberman.setGoLeft(); break;
                 case D: bomberman.setGoRight(); break;
+                case SPACE: tiles.add(bomberman.setBomb(gc)); break;
             }
         });
 
@@ -122,7 +126,8 @@ public class BombermanGame extends Application {
             mapHeight = scanner.nextInt();
             mapWidth = scanner.nextInt();
             System.out.println("Create map size: " + mapWidth + ", " + mapHeight);
-            map = new char[mapHeight][mapWidth];
+//            map = new char[mapHeight][mapWidth];
+            Map.Instance.board = new char[mapHeight][mapWidth];
             mapOneal = new int[mapHeight][mapWidth];
             scanner.nextLine();
 
@@ -131,7 +136,8 @@ public class BombermanGame extends Application {
 
                 for(int j = 0; j < line.length(); j++){
                     Character entityName = line.charAt(j);
-                    map[i][j] = entityName;
+//                    map[i][j] = entityName;
+                    Map.Instance.board[i][j] = entityName;
                     Entity object;
                     if(entityName == '#'){
                         object = new Wall(j, i, Sprite.wall.getFxImage());
@@ -144,6 +150,7 @@ public class BombermanGame extends Application {
                         mapOneal[i][j] = 1;
                     }
                     tiles.add((Tile) object);
+//                    stillObjects.add(object);
                     if(entityName == 's'){
                         SpeedItem speedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
                         items.add(speedItem);
@@ -176,8 +183,10 @@ public class BombermanGame extends Application {
         }
     }
 
-
     public void update() {
+//        entities.forEach(Entity::update);
+        tiles.forEach(Tile::update);
+        bombs.forEach(Entity::update);
         balloons.forEach(Balloon::update);
         onealList.forEach(Oneal::update);
         items.forEach(Item::update);
@@ -195,14 +204,42 @@ public class BombermanGame extends Application {
             doll.moveDoll();
             doll.moveHandler(DOLL_SPEED, tiles, map);
         }
-        bomberman.moveHandler(BOMBER_SPEED, tiles, map);
+        bomberman.moveHandler(BOMBER_SPEED, tiles, Map.Instance.board);
         items.remove(bomberman.checkUseItem(items));
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        tiles.forEach(g -> g.render(gc));
+//        tiles.forEach(g -> g.render(gc));
+//        stillObjects.forEach(g -> g.render(gc));
+        for(int i = 0; i < tiles.size(); i++){
+            Tile tile = tiles.get(i);
+            tile.render(gc);
+            if(tile instanceof Brick)
+            {
+                Brick brick = (Brick) tile;
+                // Phá tường thay bằng cỏ
+                if(brick.finished)
+                {
+                    tiles.remove(brick);
+                    i--;
+                    tiles.add(new Grass(brick.getBoardPos().getY(), brick.getBoardPos().getX()
+                            , Sprite.grass.getFxImage()));
+                }
+            }
+            if(tile instanceof Bomb)
+            {
+                Bomb bomb = (Bomb) tile;
+                if(bomb.finished) {
+                    tiles.remove(bomb);
+                    i--;
+                }
+            }
+        }
+
         bomberman.render(gc);
+
+//        entities.forEach(g -> g.render(gc));
         balloons.forEach(g -> g.render(gc));
         onealList.forEach(g -> g.render(gc));
         dolls.forEach(g -> g.render(gc));

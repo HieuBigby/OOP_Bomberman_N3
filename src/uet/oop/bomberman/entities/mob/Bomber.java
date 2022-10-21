@@ -1,8 +1,11 @@
 package uet.oop.bomberman.entities.mob;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.entities.Bomb;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.enemy.Oneal;
 import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Item.Item;
@@ -13,15 +16,36 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 
 public class Bomber extends Mob {
+    public BoxPos lastMapPos;
+    public boolean moveOutOfBomb = true;
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
+
+        // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
+        this.collideBox.setFitHeight(26);
+        this.collideBox.setFitWidth(20);
+
+        this.setCollideBox(this.x + 1, this.y + 3);
+        lastMapPos = getPositionInMap();
     }
 
     @Override
+    public void setCollision(boolean collision) {
+        super.setCollision(collision);
+        moveOutOfBomb = !collision;
+    }
+
+//    public void currentlyCollideWithBomb()
+
+    @Override
     public void update() {
-        state++;
-        if(state > 100) state = 0;
+//        if(!collision)
+//        {
+//            moveOutOfBomb = true;
+//        }
+//        state++;
+//        if(state > 100) state = 0;
         if(goLeft){
             Image image = Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, state, 20).getFxImage();
             setImg(image);
@@ -59,6 +83,37 @@ public class Bomber extends Mob {
         }
         return null;
     }
+
+    @Deprecated
+    // (nên dùng getBoardPos)
+    public BoxPos getPositionInMap(){
+        BoxPos boxCenter = getCenterBoxPos();
+//        System.out.println(boxCenter.x / Sprite.SCALED_SIZE + ", " + boxCenter.y / Sprite.SCALED_SIZE);
+        return new BoxPos(boxCenter.x / Sprite.SCALED_SIZE, boxCenter.y / Sprite.SCALED_SIZE);
+    }
+
+    // Lấy sự kiện bomber di chuyển đến ô khác để cập nhật lại map
+    public boolean mapPosChange(){
+        BoxPos currentMapPos = getPositionInMap();
+        if(!currentMapPos.equals(lastMapPos)){
+//            System.out.println("Map pos change to " + currentMapPos.x + " : " + currentMapPos.y);
+            updateMap(currentMapPos.x, currentMapPos.y);
+        }
+        lastMapPos = currentMapPos;
+        return true;
+    }
+
+    /**
+     * cập nhật lại vị trí bomber trên map
+     */
+    public void updateMap(int newX, int newY)
+    {
+//        if(Map.Instance.board[lastMapPos.y][lastMapPos.x] == 'B')
+//            moveOutOfBomb = true;
+        Map.Instance.board[lastMapPos.y][lastMapPos.x] = ' ';
+        Map.Instance.board[newY][newX] = 'p';
+    }
+
     // Kiểm tra xem có lối đi trống cho bomber
     public boolean isEmptySpace(BoxPos boxPos, AdjacentPos adjacentPos, char[][] map) {
         if(adjacentPos == AdjacentPos.LEFT){
@@ -76,7 +131,8 @@ public class Bomber extends Mob {
         if (map == null) {
             return false;
         }
-        return map[normalizedPos.y][normalizedPos.x] == ' ';
+        return (map[normalizedPos.y][normalizedPos.x] == ' '
+                || map[normalizedPos.y][normalizedPos.x] == 'p');
     }
 
     // Dịch vị trí nhân vật khi va chạm với vật thể khác trong map
@@ -136,7 +192,24 @@ public class Bomber extends Mob {
         }
     }
 
+    /**
+     * Kiểm tra xem bomber đã di chuyển ra khỏi bomb chưa (còn lỗi)
+     * @return
+     */
+    public boolean moveOutOfBomb(){
+        BoxPos boardPos = getBoardPos();
+//        System.out.println("Có bomb ở vị trí " + boardPos.x + ", " + boardPos.y + ": "
+//                + Map.Instance.hasBombAt(boardPos.x, boardPos.y));
+        return !Map.Instance.hasBombAt(boardPos.x, boardPos.y);
+    }
 
-    public void setBomb() {
+    /**
+     * Đặt bom
+     */
+    public Bomb setBomb(GraphicsContext gc) {
+        System.out.println("Bomb spawn at " + this.x + ", " + this.y);
+        moveOutOfBomb = false;
+        BoxPos boxPos = this.getCenterBoxPos();
+        return new Bomb(boxPos.x / Sprite.SCALED_SIZE, boxPos.y / Sprite.SCALED_SIZE, Sprite.bomb_exploded.getFxImage());
     }
 }

@@ -2,7 +2,9 @@ package uet.oop.bomberman.entities.mob;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.entities.Bomb;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.enemy.Balloon;
 import uet.oop.bomberman.entities.mob.enemy.Oneal;
 import uet.oop.bomberman.entities.tile.Grass;
@@ -80,13 +82,39 @@ public class Mob extends Entity {
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
                     collision = true;
                 if(this instanceof Bomber){
-                    ((Bomber) this).slideWhenCollide(obj, map);
+                    Bomber bomber = (Bomber) this;
+                    bomber.slideWhenCollide(obj, Map.Instance.board);
+                    if(obj instanceof Bomb)
+                    {
+//                        System.out.println("Va chạm với bomb");
+                        System.out.println("Bomber chạy ra khỏi bomb: " + bomber.moveOutOfBomb);
+                        // Chưa chạy ra khỏi bomb là chưa có va chạm
+                        if(bomber.moveOutOfBomb)
+                        {
+                            return true;
+                        }
+                        bomber.moveOutOfBomb = false;
+                        return false;
+//                        return bomber.moveOutOfBomb();
+                    }
+//                    else {
+//                        System.out.println("Sao không true");
+//                        bomber.moveOutOfBomb = true;
+//                    }
                 }
 
                 if(this instanceof Oneal)
                     ((Oneal) this).slideWhenCollide(obj, map);
                 return true;
 
+            }
+            else
+            {
+                if(this instanceof Bomber){
+                    if(obj instanceof Bomb) {
+                        ((Bomber) this).moveOutOfBomb = true;
+                    }
+                }
             }
 
         }
@@ -102,6 +130,10 @@ public class Mob extends Entity {
         goRight = false;
         goDown = false;
         goUp = true;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
     }
 
     public boolean isGoDown() {

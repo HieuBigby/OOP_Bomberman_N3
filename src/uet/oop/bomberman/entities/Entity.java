@@ -40,6 +40,12 @@ public abstract class Entity {
                 (int) (this.y + this.collideBox.getBoundsInLocal().getHeight() / 2));
     }
 
+    public BoxPos getBoardPos()
+    {
+        BoxPos centerPos = getCenterBoxPos();
+        return new BoxPos(centerPos.y / Sprite.SCALED_SIZE, centerPos.x / Sprite.SCALED_SIZE);
+    }
+
     public int getX() {
         return x;
     }
@@ -49,6 +55,8 @@ public abstract class Entity {
     }
 
     public void render(GraphicsContext gc) {
+        state++;
+        if(state > 100) state = 0;
         gc.drawImage(img, x, y);
     }
 
@@ -77,6 +85,11 @@ public abstract class Entity {
 
         public int getY() {
             return y;
+        }
+
+        public boolean compare(int x, int y)
+        {
+            return this.x == x && this.y == y;
         }
 
         @Override
