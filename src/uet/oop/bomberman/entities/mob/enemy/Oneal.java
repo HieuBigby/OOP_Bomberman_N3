@@ -10,11 +10,6 @@ import uet.oop.bomberman.graphics.Sprite;
 public class Oneal extends Enemy {
     public Oneal(int x, int y, Image img) {
         super(x, y, img);
-        // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
-        this.collideBox.setFitHeight(25);
-        this.collideBox.setFitWidth(25);
-        //
-        this.setCollideBox(this.x + 1,  this.y + 1);
     }
 
     @Override

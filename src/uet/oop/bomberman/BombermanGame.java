@@ -11,6 +11,7 @@ import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.mob.Bomber;
 import uet.oop.bomberman.entities.mob.Mob;
 import uet.oop.bomberman.entities.mob.enemy.Balloon;
+import uet.oop.bomberman.entities.mob.enemy.Doll;
 import uet.oop.bomberman.entities.mob.enemy.Oneal;
 import uet.oop.bomberman.entities.tile.Brick;
 import uet.oop.bomberman.entities.tile.Grass;
@@ -37,6 +38,8 @@ public class BombermanGame extends Application {
     public static final int BALlOON_SPEED = 1;
 
     public static final int ONEAL_SPEED = 1;
+
+    public static final int DOLL_SPEED = 1;
     private GraphicsContext gc;
     private Canvas canvas;
     private char[][] map;
@@ -44,6 +47,7 @@ public class BombermanGame extends Application {
     private int[][] mapOneal;
     private List<Balloon> balloons = new ArrayList<>();
     private List<Oneal> onealList = new ArrayList<>();
+    private List<Doll> dolls = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Item> items = new ArrayList<>();
 
@@ -72,8 +76,10 @@ public class BombermanGame extends Application {
         Scene scene = new Scene(root);
         setInput(scene);
 
+
         // Them scene vao stage
         stage.setScene(scene);
+        stage.setTitle("Bomberman Made Hieu x Sang");
         stage.show();
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         AnimationTimer timer = new AnimationTimer() {
@@ -158,6 +164,10 @@ public class BombermanGame extends Application {
                         Oneal oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
                         onealList.add(oneal);
                     }
+                    if(entityName == '3'){
+                        Doll doll = new Doll(j, i, Sprite.doll_left1.getFxImage());
+                        dolls.add(doll);
+                    }
                 }
 
             }
@@ -171,14 +181,19 @@ public class BombermanGame extends Application {
         balloons.forEach(Balloon::update);
         onealList.forEach(Oneal::update);
         items.forEach(Item::update);
+        dolls.forEach(Doll::update);
         bomberman.update();
-        for(int i=0; i<balloons.size(); i++){
-            balloons.get(i).moveBalloon(i);
-            balloons.get(i).moveHandler(BALlOON_SPEED, tiles, map);
+        for(Balloon balloon : balloons){
+            balloon.moveBalloon();
+            balloon.moveHandler(BALlOON_SPEED, tiles, map);
         }
         for (Oneal oneal : onealList) {
             oneal.moveOneal(bomberman, mapOneal);
             oneal.moveHandler(ONEAL_SPEED, tiles, map);
+        }
+        for(Doll doll: dolls){
+            doll.moveDoll();
+            doll.moveHandler(DOLL_SPEED, tiles, map);
         }
         bomberman.moveHandler(BOMBER_SPEED, tiles, map);
         items.remove(bomberman.checkUseItem(items));
@@ -190,6 +205,7 @@ public class BombermanGame extends Application {
         bomberman.render(gc);
         balloons.forEach(g -> g.render(gc));
         onealList.forEach(g -> g.render(gc));
+        dolls.forEach(g -> g.render(gc));
         items.forEach(g -> g.render(gc));
     }
 

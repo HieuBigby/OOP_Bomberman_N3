@@ -73,6 +73,9 @@ public class BFS {
             do {
                 path.addFirst(p);
             } while ((p = p.prev) != null);
+            if(path.size() >10) {
+                return start;
+            }
             if(path.size()>1){
                 int[] result = new int[] {path.get(1).y,path.get(1).x};
                 return result;

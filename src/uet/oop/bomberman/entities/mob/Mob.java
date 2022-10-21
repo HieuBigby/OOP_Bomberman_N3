@@ -17,6 +17,11 @@ public class Mob extends Entity {
 
     public Mob(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+        // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
+        this.collideBox.setFitHeight(25);
+        this.collideBox.setFitWidth(25);
+        //
+        this.setCollideBox(this.x + 1,  this.y + 3);
     }
     public void move(int dx, int dy) {
 
