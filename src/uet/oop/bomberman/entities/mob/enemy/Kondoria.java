@@ -2,8 +2,6 @@ package uet.oop.bomberman.entities.mob.enemy;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Map;
-import uet.oop.bomberman.entities.tile.Brick;
 import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Tile;
 import uet.oop.bomberman.graphics.Sprite;
@@ -11,29 +9,27 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Balloon extends Enemy {
-    public Balloon(int x, int y, Image img) {
-        super(x, y, img);
-        goLeft = true;
+public class Kondoria extends Enemy{
+    public Kondoria(int xUnit, int yUnit, Image img) {
+        super(xUnit, yUnit, img);
+        setGoLeft();
     }
-
     @Override
     public void update() {
         state++;
         if (state > 100) state = 0;
         if (goLeft || goDown) {
-            Image image = Sprite.movingSprite(Sprite.balloom_left1, Sprite.balloom_left2, Sprite.balloom_left3, state, 50).getFxImage();
+            Image image = Sprite.movingSprite(Sprite.kondoria_left1, Sprite.kondoria_left2, Sprite.kondoria_left3, state, 50).getFxImage();
             setImg(image);
         }
         if (goRight || goUp) {
-            Image image = Sprite.movingSprite(Sprite.balloom_right1, Sprite.balloom_right2, Sprite.balloom_right3, state, 50).getFxImage();
+            Image image = Sprite.movingSprite(Sprite.kondoria_right1, Sprite.kondoria_right2, Sprite.kondoria_right3, state, 50).getFxImage();
             setImg(image);
         }
     }
 
-
     // tạo move cho Ballon kiểu đi vòng quanh
-    public void moveBalloon() {
+    public void moveKondoria() {
         if (collision) {
             int random = ThreadLocalRandom.current().nextInt(0, 4);
             switch (random) {
@@ -53,7 +49,4 @@ public class Balloon extends Enemy {
         }
     }
 
-    public void move() {
-        x++;
-    }
 }

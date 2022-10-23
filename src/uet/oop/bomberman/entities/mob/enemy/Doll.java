@@ -1,10 +1,17 @@
 package uet.oop.bomberman.entities.mob.enemy;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.Mob;
+import uet.oop.bomberman.entities.tile.Brick;
+import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Tile;
 import uet.oop.bomberman.graphics.Sprite;
 
-public class Doll extends Mob {
+import java.util.ArrayList;
+
+public class Doll extends Enemy {
     public Doll(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         goLeft = true;
@@ -21,6 +28,7 @@ public class Doll extends Mob {
             setImg(image);
         }
     }
+
     public void moveDoll(){
         if(isGoLeft() && collision) {
             setGoRight();

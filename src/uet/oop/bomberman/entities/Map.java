@@ -14,7 +14,8 @@ public class Map {
 //
 //        return Instance;
 //    }
-    public char[][] board;
+    public static char[][] board;
+    public static int[][] boardInt;
     public ArrayList<Tile> entityList;
 
     public int getWidth(){
