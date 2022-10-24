@@ -21,6 +21,10 @@ import java.util.ArrayList;
 public abstract class Mob extends Entity {
     public boolean collision = false;
     public boolean goUp, goDown, goLeft, goRight;
+    public boolean destroy = false;
+    public boolean destroyFinished = false;
+    public int destroyTime = 0;
+
 
 
 
@@ -29,10 +33,6 @@ public abstract class Mob extends Entity {
     public Mob(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
-        this.collideBox.setFitHeight(25);
-        this.collideBox.setFitWidth(25);
-        //
-        this.setCollideBox(this.x + 1,  this.y + 3);
     }
     public void move(int dx, int dy) {
 
@@ -41,6 +41,7 @@ public abstract class Mob extends Entity {
 
         setCollideBox(this.x + 1, this.y + 1);
     }
+
     // Xử lý di chuyển Mob
     public void moveHandler(int speed, ArrayList<Tile> tiles) {
         int dx = 0, dy = 0;
@@ -233,6 +234,17 @@ public abstract class Mob extends Entity {
     }
     @Override
     public void update() {
+//        System.out.println("Có update không vậy?");
+        if(destroy) {
+            if (destroyTime > 0) {
+                destroyTime--;
+            } else {
+                destroyFinished = true;
+            }
+        }
+    }
 
+    public void destroy(){
+        this.destroy = true;
     }
 }

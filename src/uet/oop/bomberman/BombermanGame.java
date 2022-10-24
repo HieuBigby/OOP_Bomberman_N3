@@ -27,30 +27,14 @@ import java.util.Scanner;
 public class BombermanGame extends Application {
 
     public int currentLevel, mapWidth, mapHeight;
-//    public static final int WIDTH = 20;
-//    public static final int HEIGHT = 15;
+
     public static int BOMBER_SPEED = 2;
-    public static final int BALlOON_SPEED = 1;
 
-    public static final int ONEAL_SPEED = 1;
-
-    public static final int DOLL_SPEED = 1;
-
-    private static final int GHOST_SPEED = 1;
-
-    private static final int KONDORIA_SPEED = 1;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Enemy> enemies = new ArrayList<>();
     private  List<Bomb> bombs = new ArrayList<>();
-    private List<Balloon> balloons = new ArrayList<>();
-    private List<Oneal> oneals = new ArrayList<>();
-    private List<Doll> dolls = new ArrayList<>();
-
-    private List<Ghost> ghosts = new ArrayList<>();
-
-    private List<Kondoria> kondorias = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Item> items = new ArrayList<>();
 
@@ -108,7 +92,10 @@ public class BombermanGame extends Application {
                 case S:  bomberman.setGoDown(); break;
                 case A:  bomberman.setGoLeft(); break;
                 case D: bomberman.setGoRight(); break;
-                case SPACE: tiles.add(bomberman.setBomb(gc)); break;
+                case SPACE:
+                    if(!Map.Instance.hasBomb())
+                        tiles.add(bomberman.setBomb(gc));
+                    break;
             }
         });
 
@@ -128,7 +115,7 @@ public class BombermanGame extends Application {
             mapHeight = scanner.nextInt();
             mapWidth = scanner.nextInt();
             System.out.println("Create map size: " + mapWidth + ", " + mapHeight);
-//            map = new char[mapHeight][mapWidth];
+
             Map.Instance.board = new char[mapHeight][mapWidth];
             Map.Instance.boardInt = new int[mapHeight][mapWidth];
             scanner.nextLine();
@@ -138,7 +125,7 @@ public class BombermanGame extends Application {
 
                 for(int j = 0; j < line.length(); j++){
                     Character entityName = line.charAt(j);
-//                    map[i][j] = entityName;
+
                     Map.Instance.board[i][j] = entityName;
                     Entity object;
                     if(entityName == '#'){
@@ -170,27 +157,22 @@ public class BombermanGame extends Application {
                     }
                     if(entityName == '1'){
                         Balloon balloon = new Balloon(j, i, Sprite.balloom_left1.getFxImage());
-                        balloons.add(balloon);
                         enemies.add(balloon);
                     }
                     if(entityName == '2'){
                         Oneal oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
-                        oneals.add(oneal);
                         enemies.add(oneal);
                     }
                     if(entityName == '3'){
                         Doll doll = new Doll(j, i, Sprite.doll_left1.getFxImage());
-                        dolls.add(doll);
                         enemies.add(doll);
                     }
                     if(entityName == '4'){
                         Ghost ghost = new Ghost(j, i, Sprite.ghost_left1.getFxImage());
-                        ghosts.add(ghost);
                         enemies.add(ghost);
                     }
                     if(entityName == '5'){
                         Kondoria kondoria = new Kondoria(j, i, Sprite.kondoria_left1.getFxImage());
-                        kondorias.add(kondoria);
                         enemies.add(kondoria);
                     }
                 }
@@ -201,39 +183,37 @@ public class BombermanGame extends Application {
         }
     }
 
+    public void removeBomber(){
+//        System.out.println("Xóa bomber");
+        bomberman.destroy();
+    }
+
     public void update() {
-//        entities.forEach(Entity::update);
-        tiles.forEach(Tile::update);
-        bombs.forEach(Entity::update);
-        balloons.forEach(Balloon::update);
-        oneals.forEach(Oneal::update);
-        items.forEach(Item::update);
-        dolls.forEach(Doll::update);
-        ghosts.forEach(Ghost::update);
-        kondorias.forEach(Kondoria::update);
+        for (Tile tile : tiles){
+            tile.update();
+            if(tile instanceof Bomb){
+                if(((Bomb) tile).hitBomber){
+                    removeBomber();
+
+                }
+            }
+        }
+        for(Enemy enemy : enemies)
+        {
+            enemy.update();
+            enemy.moveEnemy();
+            enemy.moveHandler(enemy.speed, tiles);
+        }
+
         bomberman.update();
-        for(Balloon balloon : balloons){
-            balloon.moveBalloon();
-            balloon.moveHandler(BALlOON_SPEED, tiles);
-        }
-        for (Oneal oneal : oneals) {
-            oneal.moveOneal(bomberman, Map.Instance.boardInt);
-            oneal.moveHandler(ONEAL_SPEED, tiles);
-        }
-        for(Doll doll: dolls){
-            doll.moveDoll();
-            doll.moveHandler(DOLL_SPEED, tiles);
-        }
-        for(Ghost ghost: ghosts){
-            ghost.moveGhost();
-            ghost.moveHandler(GHOST_SPEED, tiles);
-        }
-        for(Kondoria kondoria: kondorias){
-            kondoria.moveKondoria();
-            kondoria.moveHandler(KONDORIA_SPEED, tiles);
-        }
+
         bomberman.moveHandler(BOMBER_SPEED, tiles);
         bomberman.meetingEnemy(enemies);
+
+        if(bomberman.destroyFinished){
+            System.out.println("Xóa bomber cũ bằng bomber mới");
+            bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        }
         items.remove(bomberman.checkUseItem(items));
     }
 
@@ -247,7 +227,7 @@ public class BombermanGame extends Application {
             {
                 Brick brick = (Brick) tile;
                 // Phá tường thay bằng cỏ
-                if(brick.finished)
+                if(brick.destroyFinished)
                 {
                     tiles.remove(brick);
                     i--;
@@ -265,12 +245,10 @@ public class BombermanGame extends Application {
             }
         }
 
-        bomberman.render(gc);
-        balloons.forEach(g -> g.render(gc));
-        oneals.forEach(g -> g.render(gc));
-        dolls.forEach(g -> g.render(gc));
-        ghosts.forEach(g -> g.render(gc));
-        kondorias.forEach(g -> g.render(gc));
+        if(!bomberman.destroyFinished)
+            bomberman.render(gc);
+
+        enemies.forEach(g -> g.render(gc));
         items.forEach(g -> g.render(gc));
     }
 

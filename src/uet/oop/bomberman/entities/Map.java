@@ -1,8 +1,10 @@
 package uet.oop.bomberman.entities;
 
+import uet.oop.bomberman.entities.mob.Bomber;
 import uet.oop.bomberman.entities.tile.Brick;
 import uet.oop.bomberman.entities.tile.Tile;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Map {
@@ -14,8 +16,8 @@ public class Map {
 //
 //        return Instance;
 //    }
-    public static char[][] board;
-    public static int[][] boardInt;
+    public char[][] board;
+    public int[][] boardInt;
     public ArrayList<Tile> entityList;
 
     public int getWidth(){
@@ -34,6 +36,19 @@ public class Map {
             }
             System.out.println();
         }
+    }
+
+    public int[] getBombePosition()
+    {
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++)
+            {
+                if(board[i][j] == 'p'){
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return new int[]{0, 0};
     }
 
     public Entity getEntityAt(int x, int y)
@@ -79,10 +94,21 @@ public class Map {
         return false;
     }
 
+    public boolean hasBomb()
+    {
+        for(Entity entity : entityList)
+        {
+            if(entity instanceof Bomb){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void removeAt(int x, int y)
     {
 //        System.out.println("Xóa vật thể '" + board[x][y] + "' tại vi trí " + x + ", " + y);
-        if(board[x][y] != '*') return;
+//        if(board[x][y] != '*') return;
         Entity entity = getEntityAt(x, y);
         if(entity != null)
         {
@@ -90,6 +116,11 @@ public class Map {
             {
                 System.out.println("Xóa brick ở vị trí " + x + ", " + y);
                 ((Brick)entity).destroy();
+            }
+            if(entity instanceof Bomber)
+            {
+                System.out.println("Xóa bomber");
+                ((Bomber)entity).destroy();
             }
         }
         board[x][y] = ' ';

@@ -16,6 +16,28 @@ public class Ghost extends Enemy{
         super(xUnit, yUnit, img);
         setGoUp();
     }
+
+    @Override
+    public void moveEnemy() {
+        if (state == 100|| collision) {
+            int random = ThreadLocalRandom.current().nextInt(0, 4);
+            switch (random) {
+                case 0:
+                    setGoLeft();
+                    break;
+                case 1:
+                    setGoRight();
+                    break;
+                case 2:
+                    setGoDown();
+                    break;
+                case 3:
+                    setGoUp();
+                    break;
+            }
+        }
+    }
+
     public void update() {
         state++;
         if(state > 100) state = 0;
@@ -46,23 +68,4 @@ public class Ghost extends Enemy{
         return false;
     }
 
-    public void moveGhost() {
-        if (state == 100|| collision) {
-            int random = ThreadLocalRandom.current().nextInt(0, 4);
-            switch (random) {
-                case 0:
-                    setGoLeft();
-                    break;
-                case 1:
-                    setGoRight();
-                    break;
-                case 2:
-                    setGoDown();
-                    break;
-                case 3:
-                    setGoUp();
-                    break;
-            }
-        }
-    }
 }

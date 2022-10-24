@@ -16,6 +16,8 @@ public class Bomb extends Tile {
 
     public int flameRendered = 0;
 
+    public boolean hitBomber = false;
+
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -103,6 +105,15 @@ public class Bomb extends Tile {
 
             flameRendered++;
             if(flameRendered > 4) return;
+
+//            Map.Instance.printMap();
+//                    System.out.println(adjacentPos + " flame: " + collidePos.x + ", " + collidePos.y + " collide with "
+//                + Map.Instance.board[collidePos.x][collidePos.y]);
+
+            if(Map.Instance.board[collidePos.x][collidePos.y] == 'p'){
+                System.out.println("Bomb trúng bomber");
+                hitBomber = true;
+            }
 
             Map.Instance.removeAt(collidePos.x, collidePos.y);
         }

@@ -5,8 +5,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.awt.*;
-
 public abstract class Entity {
     //Tọa độ X tính từ góc trái trên trong Canvas
     protected int x;
@@ -19,6 +17,7 @@ public abstract class Entity {
 
     protected Image img;
     public ImageView collideBox;
+
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
     public Entity(int xUnit, int yUnit, Image img) {
@@ -69,6 +68,9 @@ public abstract class Entity {
     public void setImg(Image img) {
         this.img = img;
     }
+//    public void destroy(){
+//        this.destroy = true;
+//    }
 
 
     public class BoxPos {

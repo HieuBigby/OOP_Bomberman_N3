@@ -21,6 +21,7 @@ import java.util.List;
 public class Bomber extends Mob {
     public BoxPos lastMapPos;
     public boolean moveOutOfBomb = true;
+    public boolean usingBombItem = false;
 
     public static boolean wallPass = false;
 
@@ -32,7 +33,8 @@ public class Bomber extends Mob {
         this.collideBox.setFitWidth(20);
 
         this.setCollideBox(this.x + 1, this.y + 3);
-        lastMapPos = getPositionInMap();
+        this.destroyTime = 100;
+        lastMapPos = getBoardPos();
     }
 
     @Override
@@ -51,7 +53,8 @@ public class Bomber extends Mob {
 //        }
 //        state++;
 //        if(state > 100) state = 0;
-         if(goLeft){
+        super.update();
+        if(goLeft){
             Image image = Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, state, 20).getFxImage();
             setImg(image);
         }
@@ -69,12 +72,22 @@ public class Bomber extends Mob {
         }
     }
 
+    @Override
+    public void render(GraphicsContext gc) {
+        if(destroy){
+            this.img = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2
+                    , Sprite.player_dead3, state, 60).getFxImage();
+        }
+        super.render(gc);
+    }
+
     public void move(int dx, int dy) {
 
         this.x += dx;
         this.y += dy;
 
         setCollideBox(this.x + 1, this.y + 3);
+        mapPosChange();
     }
     @Override
     public boolean checkCollision(ArrayList<Tile> tiles){
@@ -83,7 +96,7 @@ public class Bomber extends Mob {
             if(obj instanceof Grass) continue;
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
                 collision = true;
-                    slideWhenCollide(obj);
+
                     if(wallPass&& obj instanceof Brick){
                         collision = false;
                         return false;
@@ -100,7 +113,7 @@ public class Bomber extends Mob {
                         moveOutOfBomb = false;
                         return false;
                     }
-
+                slideWhenCollide(obj);
 
                 return true;
 
@@ -150,7 +163,7 @@ public class Bomber extends Mob {
 
     // Lấy sự kiện bomber di chuyển đến ô khác để cập nhật lại map
     public boolean mapPosChange(){
-        BoxPos currentMapPos = getPositionInMap();
+        BoxPos currentMapPos = getBoardPos();
         if(!currentMapPos.equals(lastMapPos)){
 //            System.out.println("Map pos change to " + currentMapPos.x + " : " + currentMapPos.y);
             updateMap(currentMapPos.x, currentMapPos.y);
@@ -166,8 +179,8 @@ public class Bomber extends Mob {
     {
 //        if(Map.Instance.board[lastMapPos.y][lastMapPos.x] == 'B')
 //            moveOutOfBomb = true;
-        Map.Instance.board[lastMapPos.y][lastMapPos.x] = ' ';
-        Map.Instance.board[newY][newX] = 'p';
+        Map.Instance.board[lastMapPos.x][lastMapPos.y] = ' ';
+        Map.Instance.board[newX][newY] = 'p';
     }
 
 

@@ -16,6 +16,17 @@ public class Doll extends Enemy {
         super(xUnit, yUnit, img);
         goLeft = true;
     }
+
+    @Override
+    public void moveEnemy() {
+        if(isGoLeft() && collision) {
+            setGoRight();
+        }else
+        if(isGoRight()&& collision){
+            setGoLeft();
+        }
+    }
+
     public void update() {
         state++;
         if(state > 100) state = 0;
@@ -26,15 +37,6 @@ public class Doll extends Enemy {
         if(goRight||goUp){
             Image image = Sprite.movingSprite(Sprite.doll_right1, Sprite.doll_right2, Sprite.doll_right3, state, 50).getFxImage();
             setImg(image);
-        }
-    }
-
-    public void moveDoll(){
-        if(isGoLeft() && collision) {
-            setGoRight();
-        }else
-        if(isGoRight()&& collision){
-            setGoLeft();
         }
     }
 }

@@ -1,5 +1,6 @@
 package uet.oop.bomberman.entities.mob.enemy;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Map;
@@ -19,8 +20,8 @@ public class Balloon extends Enemy {
 
     @Override
     public void update() {
-        state++;
-        if (state > 100) state = 0;
+//        state++;
+//        if (state > 100) state = 0;
         if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.balloom_left1, Sprite.balloom_left2, Sprite.balloom_left3, state, 50).getFxImage();
             setImg(image);
@@ -31,9 +32,16 @@ public class Balloon extends Enemy {
         }
     }
 
+    @Override
+    public void render(GraphicsContext gc) {
+        if(destroy){
+            setImg(Sprite.balloom_dead.getFxImage());
+        }
+        super.render(gc);
+    }
 
     // tạo move cho Ballon kiểu đi vòng quanh
-    public void moveBalloon() {
+    public void moveEnemy() {
         if (collision) {
             int random = ThreadLocalRandom.current().nextInt(0, 4);
             switch (random) {
@@ -51,9 +59,5 @@ public class Balloon extends Enemy {
                     break;
             }
         }
-    }
-
-    public void move() {
-        x++;
     }
 }

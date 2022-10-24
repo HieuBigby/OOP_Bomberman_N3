@@ -14,22 +14,9 @@ public class Kondoria extends Enemy{
         super(xUnit, yUnit, img);
         setGoLeft();
     }
-    @Override
-    public void update() {
-        state++;
-        if (state > 100) state = 0;
-        if (goLeft || goDown) {
-            Image image = Sprite.movingSprite(Sprite.kondoria_left1, Sprite.kondoria_left2, Sprite.kondoria_left3, state, 50).getFxImage();
-            setImg(image);
-        }
-        if (goRight || goUp) {
-            Image image = Sprite.movingSprite(Sprite.kondoria_right1, Sprite.kondoria_right2, Sprite.kondoria_right3, state, 50).getFxImage();
-            setImg(image);
-        }
-    }
 
-    // tạo move cho Ballon kiểu đi vòng quanh
-    public void moveKondoria() {
+    @Override
+    public void moveEnemy() {
         if (collision) {
             int random = ThreadLocalRandom.current().nextInt(0, 4);
             switch (random) {
@@ -46,6 +33,20 @@ public class Kondoria extends Enemy{
                     setGoUp();
                     break;
             }
+        }
+    }
+
+    @Override
+    public void update() {
+        state++;
+        if (state > 100) state = 0;
+        if (goLeft || goDown) {
+            Image image = Sprite.movingSprite(Sprite.kondoria_left1, Sprite.kondoria_left2, Sprite.kondoria_left3, state, 50).getFxImage();
+            setImg(image);
+        }
+        if (goRight || goUp) {
+            Image image = Sprite.movingSprite(Sprite.kondoria_right1, Sprite.kondoria_right2, Sprite.kondoria_right3, state, 50).getFxImage();
+            setImg(image);
         }
     }
 

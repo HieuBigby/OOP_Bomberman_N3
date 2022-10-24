@@ -19,6 +19,25 @@ public class Oneal extends Enemy {
     }
 
     @Override
+    public void moveEnemy() {
+        int[] start = new int[]{getCenterBoxPos().getY() / 32, getCenterBoxPos().getX() / 32};
+//        int[] end = new int[]{bomberman.getCenterBoxPos().getY() / 32, bomberman.getCenterBoxPos().getX() / 32};
+        int[] end = Map.Instance.getBombePosition();
+        int[] result = BFS.shortestPath(Map.Instance.boardInt, start, end);
+        if (!result.equals(start)) {
+            if (result[0] < start[1]) {
+                setGoLeft();
+            } else if (result[0] > start[1]) {
+                setGoRight();
+            } else if (result[1] < start[0]) {
+                setGoUp();
+            } else if (result[1] > start[0]) {
+                setGoDown();
+            }
+        }
+    }
+
+    @Override
     public void update() {
         state++;
         if (state > 100) state = 0;
@@ -47,20 +66,7 @@ public class Oneal extends Enemy {
     }
 
     public void moveOneal(Bomber bomberman, int[][] mapOneal) {
-        int[] start = new int[]{getCenterBoxPos().getY() / 32, getCenterBoxPos().getX() / 32};
-        int[] end = new int[]{bomberman.getCenterBoxPos().getY() / 32, bomberman.getCenterBoxPos().getX() / 32};
-        int[] result = BFS.shortestPath(Map.boardInt, start, end);
-        if (!result.equals(start)) {
-            if (result[0] < start[1]) {
-                setGoLeft();
-            } else if (result[0] > start[1]) {
-                setGoRight();
-            } else if (result[1] < start[0]) {
-                setGoUp();
-            } else if (result[1] > start[0]) {
-                setGoDown();
-            }
-        }
+
     }
 
     public boolean isEmptySpace(BoxPos boxPos, AdjacentPos adjacentPos, char[][] map) {
