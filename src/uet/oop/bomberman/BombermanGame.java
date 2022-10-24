@@ -2,10 +2,13 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.scene.Camera;
 import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.mob.Bomber;
@@ -16,6 +19,8 @@ import uet.oop.bomberman.entities.tile.Item.*;
 import uet.oop.bomberman.entities.tile.Tile;
 import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.graphics.Sprite;
+
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -65,6 +70,9 @@ public class BombermanGame extends Application {
         // Tao scene
         Scene scene = new Scene(root);
         setInput(scene);
+        Camera camera = new PerspectiveCamera();
+        scene.setCamera(camera);
+        scene.setFill(Color.SILVER);
 
         // Them scene vao stage
         stage.setScene(scene);
@@ -75,8 +83,9 @@ public class BombermanGame extends Application {
             @Override
             public void handle(long l) {
 
-                render();
+                render(camera);
                 update();
+
             }
         };
         timer.start();
@@ -217,8 +226,13 @@ public class BombermanGame extends Application {
         items.remove(bomberman.checkUseItem(items));
     }
 
-    public void render() {
+    public void render(Camera camera) {
+
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        if(bomberman.getX() > Sprite.SCALED_SIZE * mapWidth/2){
+            camera.translateXProperty().set(bomberman.getX() - Sprite.SCALED_SIZE * mapWidth/2);
+        }
+
 //        tiles.forEach(g -> g.render(gc));
         for(int i = 0; i < tiles.size(); i++){
             Tile tile = tiles.get(i);

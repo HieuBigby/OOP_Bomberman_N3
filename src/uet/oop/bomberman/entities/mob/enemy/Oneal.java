@@ -22,7 +22,7 @@ public class Oneal extends Enemy {
     public void moveEnemy() {
         int[] start = new int[]{getCenterBoxPos().getY() / 32, getCenterBoxPos().getX() / 32};
 //        int[] end = new int[]{bomberman.getCenterBoxPos().getY() / 32, bomberman.getCenterBoxPos().getX() / 32};
-        int[] end = Map.Instance.getBombePosition();
+        int[] end = Map.Instance.getBomberPosition();
         int[] result = BFS.shortestPath(Map.Instance.boardInt, start, end);
         if (!result.equals(start)) {
             if (result[0] < start[1]) {
