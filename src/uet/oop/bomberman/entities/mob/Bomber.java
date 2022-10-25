@@ -14,7 +14,6 @@ import uet.oop.bomberman.entities.tile.Item.Item;
 import uet.oop.bomberman.entities.tile.Item.SpeedItem;
 import uet.oop.bomberman.entities.tile.Item.WallPassItem;
 import uet.oop.bomberman.entities.tile.Tile;
-import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import java.util.List;
 public class Bomber extends Mob {
 
     public boolean moveOutOfBomb = true;
-    public boolean usingBombItem = false;
 
     public static boolean wallPass = false;
 
@@ -134,7 +132,6 @@ public class Bomber extends Mob {
         for(Enemy enemy : enemies) {
             if(this.collideBox.getBoundsInParent().intersects(enemy.collideBox.getBoundsInParent())){
                 System.out.println("meeting Enemy");
-                isAlive = false;
                 return true;
             }
         }

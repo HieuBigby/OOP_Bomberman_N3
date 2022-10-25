@@ -29,10 +29,6 @@ public abstract class Mob extends Entity {
     public int destroyTime = 50;
 
 
-
-
-    public boolean isAlive = true;
-
     public Mob(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         lastMapPos = getBoardPos();
@@ -196,6 +192,9 @@ public abstract class Mob extends Entity {
                 }
             }
         }
+        if(this instanceof Oneal){
+            System.out.println("Oneal slide");
+        }
     }
 
     public boolean isGoUp() {
@@ -248,13 +247,6 @@ public abstract class Mob extends Entity {
         goRight = true;
         goDown = false;
         goUp = false;
-    }
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
     }
     @Override
     public void update() {

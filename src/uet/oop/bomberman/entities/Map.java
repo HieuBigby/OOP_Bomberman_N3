@@ -19,7 +19,6 @@ public class Map {
 //        return Instance;
 //    }
     public char[][] board;
-    public int[][] boardInt;
     public ArrayList<Tile> entityList;
     public ArrayList<Enemy> enemies;
 

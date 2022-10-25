@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class Oneal extends Enemy {
     public Oneal(int x, int y, Image img) {
         super(x, y, img);
-        this.symbol = '2';
     }
 
     @Override
@@ -26,7 +25,7 @@ public class Oneal extends Enemy {
         int[] start = new int[]{getCenterBoxPos().getY() / 32, getCenterBoxPos().getX() / 32};
 //        int[] end = new int[]{bomberman.getCenterBoxPos().getY() / 32, bomberman.getCenterBoxPos().getX() / 32};
         int[] end = Map.Instance.getBomberPosition();
-        int[] result = BFS.shortestPath(Map.Instance.boardInt, start, end);
+        int[] result = BFS.shortestPath(Map.Instance.board, start, end);
         if (!result.equals(start)) {
             if (result[0] < start[1]) {
                 setGoLeft();
@@ -77,28 +76,5 @@ public class Oneal extends Enemy {
         return false;
     }
 
-    public void moveOneal(Bomber bomberman, int[][] mapOneal) {
-
-    }
-
-    public boolean isEmptySpace(BoxPos boxPos, AdjacentPos adjacentPos, char[][] map) {
-        if (adjacentPos == AdjacentPos.LEFT) {
-            boxPos.x = (int) (boxPos.x - collideBox.getFitWidth() / 2) - 1;
-        } else if (adjacentPos == AdjacentPos.RIGHT) {
-            boxPos.x = (int) (boxPos.x + collideBox.getFitWidth() / 2) + 1;
-        } else if (adjacentPos == AdjacentPos.UP) {
-            boxPos.y = (int) (boxPos.y - collideBox.getFitHeight() / 2) - 1;
-        } else if (adjacentPos == AdjacentPos.DOWN) {
-            boxPos.y = (int) (boxPos.y + collideBox.getFitHeight() / 2) + 1;
-        }
-        BoxPos normalizedPos = new BoxPos(boxPos.x / Sprite.SCALED_SIZE, boxPos.y / Sprite.SCALED_SIZE);
-//        System.out.println("Checking position: " + normalizedPos.y + ", " + normalizedPos.x
-//                + ": " + (map[normalizedPos.y][normalizedPos.x] == ' '));
-        if (map == null) {
-            return false;
-        }
-        return map[normalizedPos.y][normalizedPos.x] != '#' ||
-                map[normalizedPos.y][normalizedPos.x] != '*';
-    }
 
 }

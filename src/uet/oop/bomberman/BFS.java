@@ -1,5 +1,7 @@
 package uet.oop.bomberman;
 
+import uet.oop.bomberman.entities.Map;
+
 import java.util.LinkedList;
 
 public class BFS {
@@ -21,9 +23,22 @@ public class BFS {
             return "(" + x + "," + y + ")";
         }
     }
-
+    public static int[][] convertMap(char[][] matrix){
+        int[][] result = new int[Map.Instance.getHeight()][Map.Instance.getWidth()];
+        for(int i=0; i<matrix.length; i++){
+            for(int j=0; j<matrix[0].length; j++){
+                if(matrix[i][j] == '#'|| matrix[i][j] == '*'){
+                    result[i][j] = 0;
+                }else {
+                    result[i][j] = 1;
+                }
+            }
+        }
+        return result;
+    }
     //BFS, Time O(n^2), Space O(n^2)
-    public static int[] shortestPath(int[][] matrix, int[] start, int[] end) {
+    public static int[] shortestPath(char[][] matrixChar, int[] start, int[] end) {
+        int[][] matrix = convertMap(matrixChar);
         int sx = start[0], sy = start[1];
         int dx = end[0], dy = end[1];
         //if start or end value is 0, return
