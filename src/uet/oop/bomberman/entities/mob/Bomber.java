@@ -83,6 +83,7 @@ public class Bomber extends Mob {
     }
 
     public void move(int dx, int dy) {
+        if(destroy) return;
 
         this.x += dx;
         this.y += dy;
@@ -131,7 +132,8 @@ public class Bomber extends Mob {
     public boolean meetingEnemy(List<Enemy> enemies) {
         for(Enemy enemy : enemies) {
             if(this.collideBox.getBoundsInParent().intersects(enemy.collideBox.getBoundsInParent())){
-                System.out.println("meeting Enemy");
+//                System.out.println("meeting Enemy");
+                this.destroy();
                 return true;
             }
         }

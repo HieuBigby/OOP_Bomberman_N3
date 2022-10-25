@@ -36,6 +36,8 @@ public abstract class Mob extends Entity {
     }
     public void move(int dx, int dy) {
 
+        if(destroy) return;
+
         this.x += dx;
         this.y += dy;
 

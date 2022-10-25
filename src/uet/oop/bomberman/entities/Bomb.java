@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.mob.AdjacentPos;
 import uet.oop.bomberman.entities.tile.Tile;
+import uet.oop.bomberman.graphics.Sound;
 import uet.oop.bomberman.graphics.Sprite;
 
 import static uet.oop.bomberman.entities.BoxPos.clamp;
@@ -19,6 +20,7 @@ public class Bomb extends Tile {
 
     public boolean hitBomber = false;
     public boolean doubleExplode = true;
+    public boolean soundPlayed = false;
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -46,12 +48,16 @@ public class Bomb extends Tile {
 
     @Override
     public void render(GraphicsContext gc) {
-        state++;
-        if(state > 100) state = 0;
+//        state++;
+//        if(state > 100) state = 0;
         if(exploded) {
             this.img = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1
                     , Sprite.bomb_exploded2, state, 60).getFxImage();
             renderFlame(gc, doubleExplode);
+            if(!soundPlayed) {
+                Sound.sound.playSound("bomb_explosion");
+                soundPlayed = true;
+            }
         } else {
 
             this.img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, state, 60).getFxImage();
@@ -127,10 +133,10 @@ public class Bomb extends Tile {
                     + Map.Instance.board[flamePos.x][flamePos.y]);
 
 
-            if(Map.Instance.board[flamePos.x][flamePos.y] == 'p'){
-                System.out.println("Bomb trúng bomber");
-                hitBomber = true;
-            }
+//            if(Map.Instance.board[flamePos.x][flamePos.y] == 'p'){
+//                System.out.println("Bomb trúng bomber");
+//                hitBomber = true;
+//            }
 
             Map.Instance.removeAt(flamePos.x, flamePos.y);
             if(x2){

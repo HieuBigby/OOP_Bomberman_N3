@@ -21,7 +21,6 @@ import uet.oop.bomberman.graphics.Sound;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.graphics.Menu;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class BombermanGame extends Application {
         // Tạo map
         createMap();
 
-        Map.Instance.entityList = this.tiles;
+        Map.Instance.stillObjects = this.tiles;
         Map.Instance.enemies = this.enemies;
 //        Map.Instance.getEntityAt(0, 0);
 
@@ -88,6 +87,7 @@ public class BombermanGame extends Application {
         stage.setTitle("Bomberman Made Hieu x Sang");
         stage.show();
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        Map.Instance.bomber = bomberman;
         Sound.sound.playSound("main");
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -231,10 +231,9 @@ public class BombermanGame extends Application {
         for (Tile tile : tiles) {
             tile.update();
             if (tile instanceof Bomb) {
-                if (((Bomb) tile).hitBomber) {
-                    removeBomber();
-
-                }
+//                if (((Bomb) tile).hitBomber) {
+//                    removeBomber();
+//                }
             }
         }
         for (Enemy enemy : enemies) {
@@ -256,7 +255,7 @@ public class BombermanGame extends Application {
             }else {
                 bomberman = new Bomber(16, 7, Sprite.player_right.getFxImage());
             }
-
+            Map.Instance.bomber = bomberman;
         }
         items.remove(bomberman.checkUseItem(items));
     }
@@ -267,7 +266,6 @@ public class BombermanGame extends Application {
         if (bomberman.getX() > Sprite.SCALED_SIZE * mapWidth / 2) {
             camera.translateXProperty().set(bomberman.getX() - Sprite.SCALED_SIZE * mapWidth / 2);
         }
-        items.forEach(g -> g.render(gc));
 //        tiles.forEach(g -> g.render(gc));
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
@@ -295,6 +293,8 @@ public class BombermanGame extends Application {
                 }
             }
         }
+        items.forEach(g -> g.render(gc));
+
 
         if (!bomberman.destroyFinished)
             bomberman.render(gc);

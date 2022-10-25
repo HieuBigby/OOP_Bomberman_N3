@@ -16,6 +16,7 @@ public class Sound extends JFrame{
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
                 main = AudioSystem.getClip();
                 main.open(audioIn);
+                main.loop(0);
                 main.start();
                 System.out.println(main.getFrameLength());
 //            if (name.equals("main")) {

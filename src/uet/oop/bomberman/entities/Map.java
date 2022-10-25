@@ -1,12 +1,10 @@
 package uet.oop.bomberman.entities;
 
 import uet.oop.bomberman.entities.mob.Bomber;
-import uet.oop.bomberman.entities.mob.enemy.Balloon;
 import uet.oop.bomberman.entities.mob.enemy.Enemy;
 import uet.oop.bomberman.entities.tile.Brick;
 import uet.oop.bomberman.entities.tile.Tile;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 public class Map {
@@ -19,8 +17,9 @@ public class Map {
 //        return Instance;
 //    }
     public char[][] board;
-    public ArrayList<Tile> entityList;
+    public ArrayList<Tile> stillObjects;
     public ArrayList<Enemy> enemies;
+    public Bomber bomber;
 
 
     public int getWidth(){
@@ -57,9 +56,9 @@ public class Map {
     public Entity getEntityAt(int x, int y)
     {
 //        System.out.println("Danh sách có " + entityList.size());
-        for(int i = 0; i < entityList.size(); i++)
+        for(int i = 0; i < stillObjects.size(); i++)
         {
-            Entity entity = entityList.get(i);
+            Entity entity = stillObjects.get(i);
 
             if(entity.getBoardPos().compare(x, y))
             {
@@ -71,9 +70,9 @@ public class Map {
 
     public ArrayList<Entity> getEntitiesAt(int x, int y){
         ArrayList<Entity> samePosEntities = new ArrayList<>();
-        for(int i = 0; i < entityList.size(); i++)
+        for(int i = 0; i < stillObjects.size(); i++)
         {
-            Entity entity = entityList.get(i);
+            Entity entity = stillObjects.get(i);
             if(entity.getBoardPos().compare(x, y))
             {
                 samePosEntities.add(entity);
@@ -109,7 +108,7 @@ public class Map {
 
     public boolean hasBomb()
     {
-        for(Entity entity : entityList)
+        for(Entity entity : stillObjects)
         {
             if(entity instanceof Bomb){
                 return true;
@@ -129,16 +128,15 @@ public class Map {
                 System.out.println("Xóa brick ở vị trí " + x + ", " + y);
                 ((Brick)entity).destroy();
             }
-            if(entity instanceof Bomber)
-            {
-                System.out.println("Xóa bomber");
-                ((Bomber)entity).destroy();
-            }
             if(entity instanceof Enemy)
             {
                 System.out.println("Xóa " + entity.toString());
                 ((Enemy) entity).destroy();
             }
+        }
+
+        if(board[x][y] == 'p'){
+            bomber.destroy();
         }
 //        if(entity != null)
 //        {
