@@ -17,6 +17,7 @@ import uet.oop.bomberman.entities.mob.Bomber;
 import uet.oop.bomberman.entities.mob.enemy.*;
 import uet.oop.bomberman.entities.tile.*;
 import uet.oop.bomberman.entities.tile.Item.*;
+import uet.oop.bomberman.graphics.Sound;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.graphics.Menu;
 
@@ -87,10 +88,11 @@ public class BombermanGame extends Application {
         stage.setTitle("Bomberman Made Hieu x Sang");
         stage.show();
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        Sound.sound.playSound("main");
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                if (Menu.menu.status == "playing"|| remainTime > 0) {
+                if (Menu.menu.status == "playing" && remainTime > 0) {
                     render(camera);
                     update();
                     timeCounter();
@@ -249,7 +251,12 @@ public class BombermanGame extends Application {
 
         if (bomberman.destroyFinished) {
             System.out.println("Xóa bomber cũ bằng bomber mới");
-            bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+            if(bomberman.getX() < Sprite.SCALED_SIZE * mapWidth / 2){
+                bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+            }else {
+                bomberman = new Bomber(16, 7, Sprite.player_right.getFxImage());
+            }
+
         }
         items.remove(bomberman.checkUseItem(items));
     }

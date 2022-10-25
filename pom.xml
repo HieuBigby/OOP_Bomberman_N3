@@ -28,6 +28,11 @@
             <version>15</version>
         </dependency>
         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>19</version>
+        </dependency>
+        <dependency>
             <groupId>com.vladsch.javafx-webview-debugger</groupId>
             <artifactId>javafx-webview-debugger</artifactId>
             <version>0.8.6</version>
