@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import uet.oop.bomberman.entities.mob.AdjacentPos;
 import uet.oop.bomberman.graphics.Sprite;
 
 public abstract class Entity {
@@ -73,33 +74,6 @@ public abstract class Entity {
 //    }
 
 
-    public class BoxPos {
-        public int x, y;
 
-        public BoxPos(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public boolean compare(int x, int y)
-        {
-            return this.x == x && this.y == y;
-        }
-
-        @Override
-        public String toString() {
-            return "BoxPos{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    '}';
-        }
-    }
 }
+

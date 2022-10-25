@@ -13,11 +13,8 @@ import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.mob.Bomber;
 import uet.oop.bomberman.entities.mob.enemy.*;
-import uet.oop.bomberman.entities.tile.Brick;
-import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.*;
 import uet.oop.bomberman.entities.tile.Item.*;
-import uet.oop.bomberman.entities.tile.Tile;
-import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.awt.*;
@@ -38,7 +35,7 @@ public class BombermanGame extends Application {
 
     private GraphicsContext gc;
     private Canvas canvas;
-    private List<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private  List<Bomb> bombs = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Item> items = new ArrayList<>();
@@ -57,6 +54,7 @@ public class BombermanGame extends Application {
         createMap();
 
         Map.Instance.entityList = this.tiles;
+        Map.Instance.enemies = this.enemies;
 //        Map.Instance.getEntityAt(0, 0);
 
         // Tao Canvas
@@ -149,20 +147,25 @@ public class BombermanGame extends Application {
                     }
                     tiles.add((Tile) object);
                     if(entityName == 's'){
-                        SpeedItem speedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
-                        items.add(speedItem);
+//                        SpeedItem speedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
+//                        items.add(speedItem);
+                        tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.SpeedItem));
                     }
                     if(entityName == 'b'){
-                        BombItem bombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
-                        items.add(bombItem);
+//                        BombItem bombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
+//                        items.add(bombItem);
+                        tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.BombItem));
+
                     }
                     if(entityName == 'f'){
-                        FlameItem flameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
-                        items.add(flameItem);
+//                        FlameItem flameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
+//                        items.add(flameItem);
+                        tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.FlameItem));
                     }
                     if(entityName == 'w'){
-                        WallPassItem wallPassItem = new WallPassItem(j, i, Sprite.powerup_wallpass.getFxImage());
-                        items.add(wallPassItem);
+//                        WallPassItem wallPassItem = new WallPassItem(j, i, Sprite.powerup_wallpass.getFxImage());
+//                        items.add(wallPassItem);
+                        tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.WallPassItem));
                     }
                     if(entityName == '1'){
                         Balloon balloon = new Balloon(j, i, Sprite.balloom_left1.getFxImage());
@@ -212,6 +215,7 @@ public class BombermanGame extends Application {
             enemy.update();
             enemy.moveEnemy();
             enemy.moveHandler(enemy.speed, tiles);
+
         }
 
         bomberman.update();
@@ -247,12 +251,17 @@ public class BombermanGame extends Application {
                     i--;
                     tiles.add(new Grass(brick.getBoardPos().getY(), brick.getBoardPos().getX()
                             , Sprite.grass.getFxImage()));
+
+                    Item item = brick.revealHiddenItem();
+                    if(item != null){
+                        items.add(item);
+                    }
                 }
             }
             if(tile instanceof Bomb)
             {
                 Bomb bomb = (Bomb) tile;
-                if(bomb.finished) {
+                if(bomb.destroyFinished) {
                     tiles.remove(bomb);
                     i--;
                 }
@@ -262,7 +271,16 @@ public class BombermanGame extends Application {
         if(!bomberman.destroyFinished)
             bomberman.render(gc);
 
-        enemies.forEach(g -> g.render(gc));
+        for(int i = 0; i < enemies.size(); i++){
+            Enemy enemy = enemies.get(i);
+            enemy.render(gc);
+
+            if(enemy.destroyFinished){
+                enemies.remove(enemy);
+                i--;
+            }
+        }
+//        enemies.forEach(g -> g.render(gc));
         items.forEach(g -> g.render(gc));
     }
 

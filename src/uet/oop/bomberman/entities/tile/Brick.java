@@ -2,31 +2,52 @@ package uet.oop.bomberman.entities.tile;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.BoxPos;
+import uet.oop.bomberman.entities.tile.Item.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Brick extends Tile {
-    public boolean destroy = false;
-    public boolean destroyFinished = false;
-    public int destroyTime = 50;
+//    public boolean destroy = false;
+//    public boolean destroyFinished = false;
+//    public int destroyTime = 50;
+    public ItemType hiddenItem;
     public Brick(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
-    public void destroy()
-    {
-//        System.out.println("Đã xóa brick");
-        this.destroy = true;
+    public Brick(int xUnit, int yUnit, Image img, ItemType hiddenItem) {
+        super(xUnit, yUnit, img);
+        this.hiddenItem = hiddenItem;
     }
 
     @Override
     public void update() {
         if(destroy) {
-            if (destroyTime > 0) {
-                destroyTime--;
+            if (remainTime > 0) {
+                remainTime--;
 //                System.out.println("Thời gian còn lại của brick: " + remnantTime);
             } else {
                 destroyFinished = true;
             }
+        }
+    }
+
+    public Item revealHiddenItem(){
+        if(hiddenItem == null) {
+            return null;
+        }
+        BoxPos boardPos = getBoardPos();
+        switch (hiddenItem){
+            case BombItem:
+                return new BombItem(boardPos.y, boardPos.x, Sprite.powerup_bombs.getFxImage());
+            case SpeedItem:
+                return new SpeedItem(boardPos.y, boardPos.x, Sprite.powerup_speed.getFxImage());
+            case FlameItem:
+                return new FlameItem(boardPos.y, boardPos.x,  Sprite.powerup_flames.getFxImage());
+            case WallPassItem:
+                return new WallPassItem(boardPos.y, boardPos.x, Sprite.powerup_wallpass.getFxImage());
+            default:
+                return null;
         }
     }
 

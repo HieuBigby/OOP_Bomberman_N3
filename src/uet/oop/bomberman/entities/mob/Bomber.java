@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Bomb;
+import uet.oop.bomberman.entities.BoxPos;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.enemy.Enemy;
@@ -13,13 +14,14 @@ import uet.oop.bomberman.entities.tile.Item.Item;
 import uet.oop.bomberman.entities.tile.Item.SpeedItem;
 import uet.oop.bomberman.entities.tile.Item.WallPassItem;
 import uet.oop.bomberman.entities.tile.Tile;
+import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Bomber extends Mob {
-    public BoxPos lastMapPos;
+
     public boolean moveOutOfBomb = true;
     public boolean usingBombItem = false;
 
@@ -34,7 +36,8 @@ public class Bomber extends Mob {
 
         this.setCollideBox(this.x + 1, this.y + 3);
         this.destroyTime = 100;
-        lastMapPos = getBoardPos();
+        this.symbol = 'p';
+
     }
 
     @Override
@@ -91,28 +94,28 @@ public class Bomber extends Mob {
     }
     @Override
     public boolean checkCollision(ArrayList<Tile> tiles){
-        collision = false;
+//        collision = false;
         for (Entity obj : tiles) {
             if(obj instanceof Grass) continue;
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
-                collision = true;
+//                collision = true;
 
-                    if(wallPass&& obj instanceof Brick){
-                        collision = false;
-                        return false;
-                    }
-                    if(obj instanceof Bomb)
-                    {
+                if(wallPass&& obj instanceof Brick){
+//                    collision = false;
+                    return false;
+                }
+                if(obj instanceof Bomb)
+                {
 //                        System.out.println("Va chạm với bomb");
-                        System.out.println("Bomber chạy ra khỏi bomb: " + moveOutOfBomb);
-                        // Chưa chạy ra khỏi bomb là chưa có va chạm
-                        if(moveOutOfBomb)
-                        {
-                            return true;
-                        }
-                        moveOutOfBomb = false;
-                        return false;
+                    System.out.println("Bomber chạy ra khỏi bomb: " + moveOutOfBomb);
+                    // Chưa chạy ra khỏi bomb là chưa có va chạm
+                    if(moveOutOfBomb)
+                    {
+                        return true;
                     }
+                    moveOutOfBomb = false;
+                    return false;
+                }
                 slideWhenCollide(obj);
 
                 return true;
@@ -153,35 +156,16 @@ public class Bomber extends Mob {
         return null;
     }
 
-    @Deprecated
-    // (nên dùng getBoardPos)
-    public BoxPos getPositionInMap(){
-        BoxPos boxCenter = getCenterBoxPos();
-//        System.out.println(boxCenter.x / Sprite.SCALED_SIZE + ", " + boxCenter.y / Sprite.SCALED_SIZE);
-        return new BoxPos(boxCenter.x / Sprite.SCALED_SIZE, boxCenter.y / Sprite.SCALED_SIZE);
-    }
+//    @Deprecated
+//    // (nên dùng getBoardPos)
+//    public BoxPos getPositionInMap(){
+//        BoxPos boxCenter = getCenterBoxPos();
+////        System.out.println(boxCenter.x / Sprite.SCALED_SIZE + ", " + boxCenter.y / Sprite.SCALED_SIZE);
+//        return new BoxPos(boxCenter.x / Sprite.SCALED_SIZE, boxCenter.y / Sprite.SCALED_SIZE);
+//    }
 
     // Lấy sự kiện bomber di chuyển đến ô khác để cập nhật lại map
-    public boolean mapPosChange(){
-        BoxPos currentMapPos = getBoardPos();
-        if(!currentMapPos.equals(lastMapPos)){
-//            System.out.println("Map pos change to " + currentMapPos.x + " : " + currentMapPos.y);
-            updateMap(currentMapPos.x, currentMapPos.y);
-        }
-        lastMapPos = currentMapPos;
-        return true;
-    }
 
-    /**
-     * cập nhật lại vị trí bomber trên map
-     */
-    public void updateMap(int newX, int newY)
-    {
-//        if(Map.Instance.board[lastMapPos.y][lastMapPos.x] == 'B')
-//            moveOutOfBomb = true;
-        Map.Instance.board[lastMapPos.x][lastMapPos.y] = ' ';
-        Map.Instance.board[newX][newY] = 'p';
-    }
 
 
     /**

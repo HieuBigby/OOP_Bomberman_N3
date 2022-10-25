@@ -1,7 +1,9 @@
 package uet.oop.bomberman.entities.mob.enemy;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BFS;
+import uet.oop.bomberman.entities.BoxPos;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.AdjacentPos;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 public class Oneal extends Enemy {
     public Oneal(int x, int y, Image img) {
         super(x, y, img);
+        this.symbol = '2';
     }
 
     @Override
@@ -39,8 +42,9 @@ public class Oneal extends Enemy {
 
     @Override
     public void update() {
-        state++;
-        if (state > 100) state = 0;
+//        state++;
+//        if (state > 100) state = 0;
+        super.update();
         if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.oneal_left1, Sprite.oneal_left2, Sprite.oneal_left3, state, 50).getFxImage();
             setImg(image);
@@ -49,6 +53,14 @@ public class Oneal extends Enemy {
             Image image = Sprite.movingSprite(Sprite.oneal_right1, Sprite.oneal_right2, Sprite.oneal_right3, state, 50).getFxImage();
             setImg(image);
         }
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        if(destroy){
+            setImg(Sprite.oneal_dead.getFxImage());
+        }
+        super.render(gc);
     }
 
     @Override

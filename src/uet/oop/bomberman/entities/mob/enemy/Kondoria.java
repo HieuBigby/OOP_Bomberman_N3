@@ -1,5 +1,6 @@
 package uet.oop.bomberman.entities.mob.enemy;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.tile.Grass;
@@ -38,8 +39,9 @@ public class Kondoria extends Enemy{
 
     @Override
     public void update() {
-        state++;
-        if (state > 100) state = 0;
+//        state++;
+//        if (state > 100) state = 0;
+        super.update();
         if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.kondoria_left1, Sprite.kondoria_left2, Sprite.kondoria_left3, state, 50).getFxImage();
             setImg(image);
@@ -50,4 +52,11 @@ public class Kondoria extends Enemy{
         }
     }
 
+    @Override
+    public void render(GraphicsContext gc) {
+        if(destroy){
+            setImg(Sprite.kondoria_dead.getFxImage());
+        }
+        super.render(gc);
+    }
 }

@@ -1,6 +1,8 @@
 package uet.oop.bomberman.entities;
 
 import uet.oop.bomberman.entities.mob.Bomber;
+import uet.oop.bomberman.entities.mob.enemy.Balloon;
+import uet.oop.bomberman.entities.mob.enemy.Enemy;
 import uet.oop.bomberman.entities.tile.Brick;
 import uet.oop.bomberman.entities.tile.Tile;
 
@@ -19,6 +21,8 @@ public class Map {
     public char[][] board;
     public int[][] boardInt;
     public ArrayList<Tile> entityList;
+    public ArrayList<Enemy> enemies;
+
 
     public int getWidth(){
         return board[0].length;
@@ -76,6 +80,16 @@ public class Map {
                 samePosEntities.add(entity);
             }
         }
+
+        for(int i = 0; i < enemies.size(); i++)
+        {
+            Entity entity = enemies.get(i);
+            if(entity.getBoardPos().compare(x, y))
+            {
+                samePosEntities.add(entity);
+            }
+        }
+
         return samePosEntities;
     }
 
@@ -109,9 +123,8 @@ public class Map {
     {
 //        System.out.println("Xóa vật thể '" + board[x][y] + "' tại vi trí " + x + ", " + y);
 //        if(board[x][y] != '*') return;
-        Entity entity = getEntityAt(x, y);
-        if(entity != null)
-        {
+        ArrayList<Entity> entities = getEntitiesAt(x, y);
+        for(Entity entity : entities){
             if(entity instanceof Brick)
             {
                 System.out.println("Xóa brick ở vị trí " + x + ", " + y);
@@ -122,7 +135,16 @@ public class Map {
                 System.out.println("Xóa bomber");
                 ((Bomber)entity).destroy();
             }
+            if(entity instanceof Enemy)
+            {
+                System.out.println("Xóa " + entity.toString());
+                ((Enemy) entity).destroy();
+            }
         }
+//        if(entity != null)
+//        {
+//
+//        }
         board[x][y] = ' ';
     }
 

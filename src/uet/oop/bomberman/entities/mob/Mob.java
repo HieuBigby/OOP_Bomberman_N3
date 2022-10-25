@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities.mob;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Bomb;
+import uet.oop.bomberman.entities.BoxPos;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.enemy.Balloon;
@@ -19,11 +20,13 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 
 public abstract class Mob extends Entity {
+    public BoxPos lastMapPos;
+    public char symbol;
     public boolean collision = false;
     public boolean goUp, goDown, goLeft, goRight;
     public boolean destroy = false;
     public boolean destroyFinished = false;
-    public int destroyTime = 0;
+    public int destroyTime = 50;
 
 
 
@@ -32,6 +35,7 @@ public abstract class Mob extends Entity {
 
     public Mob(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+        lastMapPos = getBoardPos();
         // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
     }
     public void move(int dx, int dy) {
@@ -40,6 +44,26 @@ public abstract class Mob extends Entity {
         this.y += dy;
 
         setCollideBox(this.x + 1, this.y + 1);
+        mapPosChange();
+    }
+
+    public boolean mapPosChange(){
+        BoxPos currentMapPos = getBoardPos();
+        if(!currentMapPos.equals(lastMapPos)){
+//            System.out.println("Map pos change to " + currentMapPos.x + " : " + currentMapPos.y);
+            updateMap(currentMapPos.x, currentMapPos.y);
+        }
+        lastMapPos = currentMapPos;
+        return true;
+    }
+
+    /**
+     * cập nhật lại vị trí trên map
+     */
+    public void updateMap(int newX, int newY)
+    {
+        Map.Instance.board[lastMapPos.x][lastMapPos.y] = ' ';
+        Map.Instance.board[newX][newY] = symbol;
     }
 
     // Xử lý di chuyển Mob
@@ -234,10 +258,10 @@ public abstract class Mob extends Entity {
     }
     @Override
     public void update() {
-//        System.out.println("Có update không vậy?");
         if(destroy) {
             if (destroyTime > 0) {
                 destroyTime--;
+//                System.out.println("Destroy time: " + destroyTime);
             } else {
                 destroyFinished = true;
             }

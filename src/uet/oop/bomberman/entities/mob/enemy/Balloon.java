@@ -16,12 +16,15 @@ public class Balloon extends Enemy {
     public Balloon(int x, int y, Image img) {
         super(x, y, img);
         goLeft = true;
+        this.symbol = '1';
     }
 
     @Override
     public void update() {
 //        state++;
 //        if (state > 100) state = 0;
+        super.update();
+//        System.out.println("Destroy time: " + destroy);
         if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.balloom_left1, Sprite.balloom_left2, Sprite.balloom_left3, state, 50).getFxImage();
             setImg(image);

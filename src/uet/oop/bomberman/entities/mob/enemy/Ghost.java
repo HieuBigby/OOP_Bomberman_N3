@@ -1,5 +1,6 @@
 package uet.oop.bomberman.entities.mob.enemy;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Map;
@@ -39,8 +40,9 @@ public class Ghost extends Enemy{
     }
 
     public void update() {
-        state++;
-        if(state > 100) state = 0;
+//        state++;
+//        if(state > 100) state = 0;
+        super.update();
         if(goLeft||goDown){
             Image image = Sprite.movingSprite(Sprite.ghost_left1, Sprite.ghost_left2, Sprite.ghost_left3, state, 50).getFxImage();
             setImg(image);
@@ -49,6 +51,14 @@ public class Ghost extends Enemy{
             Image image = Sprite.movingSprite(Sprite.ghost_right1, Sprite.ghost_right2, Sprite.ghost_right3, state, 50).getFxImage();
             setImg(image);
         }
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        if(destroy){
+            setImg(Sprite.ghost_dead.getFxImage());
+        }
+        super.render(gc);
     }
 
     @Override
