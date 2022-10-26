@@ -30,6 +30,10 @@ public class Bomb extends Tile {
     public void update() {
         if(explodeTime > 0) {
             explodeTime--;
+            if(!soundPlayed && explodeTime == 20) {
+                Sound.sound.playSound("exploded");
+                soundPlayed = true;
+            }
 //            System.out.println("Explode time left: " + explodeTime);
         }
         else {
@@ -54,10 +58,6 @@ public class Bomb extends Tile {
             this.img = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1
                     , Sprite.bomb_exploded2, state, 60).getFxImage();
             renderFlame(gc, doubleExplode);
-            if(!soundPlayed) {
-                Sound.sound.playSound("exploded");
-                soundPlayed = true;
-            }
         } else {
 
             this.img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, state, 60).getFxImage();

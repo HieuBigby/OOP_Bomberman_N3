@@ -323,6 +323,7 @@ public class BombermanGame extends Application {
             if (enemy.destroyFinished) {
                 enemies.remove(enemy);
                 i--;
+
             }
         }
     }

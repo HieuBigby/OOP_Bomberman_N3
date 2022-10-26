@@ -12,10 +12,10 @@ import uet.oop.bomberman.BombermanGame;
 
 
 public class Menu {
+    public static Menu menu = new Menu();
     public static ImageView status, sound;
     public static Text level, life, bomb, time;
     public static boolean muteSound = false;
-    public static Menu menu = new Menu();
 
     public static void createMenu(Group root,ImageView image) {
         level = new Text("Level: 1");
@@ -41,7 +41,7 @@ public class Menu {
 
         Image newGame = new Image("image/newGame.png");
         status = new ImageView(newGame);
-        status.setX(-75);
+        status.setX(-65);
         status.setY(-10);
         status.setScaleX(0.5);
         status.setScaleY(0.5);
