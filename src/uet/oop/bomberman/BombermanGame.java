@@ -32,8 +32,6 @@ public class BombermanGame extends Application {
 
     public int currentLevel, mapWidth, mapHeight;
 
-    public static int BOMBER_SPEED = 2;
-
     private boolean soundLosePlayed = false;
 
     public static int remainBomb = 50;
@@ -104,6 +102,7 @@ public class BombermanGame extends Application {
                     root.getChildren().add(backgroundView);
                     soundLosePlayed = true;
                     statusGame = "lose";
+                    restart();
                 }
                 if (statusGame != "pause" && statusGame != "new") {
                     render(camera);
@@ -113,6 +112,27 @@ public class BombermanGame extends Application {
             }
         };
         timer.start();
+    }
+
+    public void restart(){
+        remainBomb = 50;
+        remainTime = 180;
+
+        bomberLife = 3;
+        soundLosePlayed = false;
+
+        enemies = new ArrayList<>();
+        bombs = new ArrayList<>();
+        tiles = new ArrayList<>();
+        items = new ArrayList<>();
+
+        Map.Instance.stillObjects = this.tiles;
+        Map.Instance.enemies = this.enemies;
+
+        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        Map.Instance.bomber = this.bomberman;
+
+        createMap();
     }
 
 
@@ -258,7 +278,7 @@ public class BombermanGame extends Application {
 
         bomberman.update();
 
-        bomberman.moveHandler(BOMBER_SPEED, tiles);
+        bomberman.moveHandler(bomberman.speed, tiles);
         bomberman.meetingEnemy(enemies);
 
         if (bomberman.destroyFinished) {
@@ -277,8 +297,12 @@ public class BombermanGame extends Application {
     public void render(Camera camera) {
 
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        if (bomberman.getX() > Sprite.SCALED_SIZE * mapWidth / 2) {
+        if (bomberman.getX() > Sprite.SCALED_SIZE * mapWidth / 2
+        && bomberman.getX() < Sprite.SCALED_SIZE * mapWidth * 3/4) {
             camera.translateXProperty().set(bomberman.getX() - Sprite.SCALED_SIZE * mapWidth / 2);
+        }
+        if(statusGame == "lose"){
+            camera.translateXProperty().set(0);
         }
 //        tiles.forEach(g -> g.render(gc));
         for (int i = 0; i < tiles.size(); i++) {
@@ -319,7 +343,6 @@ public class BombermanGame extends Application {
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
             enemy.render(gc);
-
             if (enemy.destroyFinished) {
                 enemies.remove(enemy);
                 i--;

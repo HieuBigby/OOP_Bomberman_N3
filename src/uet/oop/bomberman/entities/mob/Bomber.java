@@ -10,6 +10,7 @@ import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.enemy.Enemy;
 import uet.oop.bomberman.entities.tile.Brick;
 import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.Item.FlameItem;
 import uet.oop.bomberman.entities.tile.Item.Item;
 import uet.oop.bomberman.entities.tile.Item.SpeedItem;
 import uet.oop.bomberman.entities.tile.Item.WallPassItem;
@@ -24,9 +25,11 @@ import java.util.List;
 public class Bomber extends Mob {
 
     public boolean moveOutOfBomb = true;
+    public int speed = 2;
 
 
-    public static boolean wallPass = false;
+    public boolean wallPass = false;
+    public boolean flameX2 = false;
     public static boolean soundCompletePLayed = false;
 
     public Bomber(int x, int y, Image img) {
@@ -99,18 +102,18 @@ public class Bomber extends Mob {
     public boolean checkCollision(ArrayList<Tile> tiles){
 //        collision = false;
         for (Entity obj : tiles) {
-            if(obj instanceof Grass) continue;
             if(obj instanceof Portal){
                 if(!soundCompletePLayed){
                     Sound.sound.playSound("complete");
                     soundCompletePLayed = true;
-                    return false;
                 }
             }
+            if(obj instanceof Grass) continue;
+
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
 //                collision = true;
 
-                if(wallPass&& obj instanceof Brick){
+                if(wallPass && obj instanceof Brick){
 //                    collision = false;
                     return false;
                 }
@@ -155,10 +158,14 @@ public class Bomber extends Mob {
         for (Item obj : items) {
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
                 if(obj instanceof SpeedItem){
-                    BombermanGame.BOMBER_SPEED = 3;
+                    this.speed = 3;
                 }
                 if(obj instanceof WallPassItem){
-                    Bomber.wallPass = true;
+                    this.wallPass = true;
+                }
+                if(obj instanceof FlameItem)
+                {
+                    this.flameX2 = true;
                 }
                 return obj;
             }
@@ -195,7 +202,11 @@ public class Bomber extends Mob {
     public Bomb setBomb(GraphicsContext gc) {
         System.out.println("Bomb spawn at " + this.x + ", " + this.y);
         moveOutOfBomb = false;
-        BoxPos boxPos = this.getCenterBoxPos();
-        return new Bomb(boxPos.x / Sprite.SCALED_SIZE, boxPos.y / Sprite.SCALED_SIZE, Sprite.bomb_exploded.getFxImage());
+//        BoxPos boxPos = this.getCenterBoxPos();
+        BoxPos boardPos = this.getBoardPos();
+//        if(flameX2){
+            return new Bomb(boardPos.y, boardPos.x, Sprite.bomb.getFxImage(), flameX2);
+//        }
+//        return new Bomb(boxPos.x / Sprite.SCALED_SIZE, boxPos.y / Sprite.SCALED_SIZE, Sprite.bomb_exploded.getFxImage());
     }
 }

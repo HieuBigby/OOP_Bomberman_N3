@@ -19,11 +19,16 @@ public class Bomb extends Tile {
     public int flameRendered = 0;
 
     public boolean hitBomber = false;
-    public boolean doubleExplode = true;
+    public boolean doubleExplode = false;
     public boolean soundPlayed = false;
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+    }
+
+    public Bomb(int xUnit, int yUnit, Image img, boolean doubleExplode) {
+        super(xUnit, yUnit, img);
+        this.doubleExplode = doubleExplode;
     }
 
     @Override
@@ -52,8 +57,7 @@ public class Bomb extends Tile {
 
     @Override
     public void render(GraphicsContext gc) {
-//        state++;
-//        if(state > 100) state = 0;
+        super.render(gc);
         if(exploded) {
             this.img = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1
                     , Sprite.bomb_exploded2, state, 60).getFxImage();

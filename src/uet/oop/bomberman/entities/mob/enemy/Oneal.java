@@ -19,6 +19,7 @@ public class Oneal extends Enemy {
     public Oneal(int x, int y, Image img) {
         super(x, y, img);
         this.setCollideBox(this.x + 1, this.y + 3);
+        this.symbol = '2';
     }
 
     @Override
@@ -76,6 +77,5 @@ public class Oneal extends Enemy {
         }
         return false;
     }
-
 
 }

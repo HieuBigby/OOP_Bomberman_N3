@@ -62,6 +62,7 @@ public abstract class Mob extends Entity {
     {
         Map.Instance.board[lastMapPos.x][lastMapPos.y] = ' ';
         Map.Instance.board[newX][newY] = symbol;
+//        Map.Instance.printMap();
     }
 
     // Xử lý di chuyển Mob
@@ -136,7 +137,8 @@ public abstract class Mob extends Entity {
             return false;
         }
         return (Map.Instance.board[normalizedPos.y][normalizedPos.x] == ' '
-                || Map.Instance.board[normalizedPos.y][normalizedPos.x] == 'p');
+                || Map.Instance.board[normalizedPos.y][normalizedPos.x] == 'p'
+                || Map.Instance.board[normalizedPos.y][normalizedPos.x] == '2');
     }
 
     // Dịch vị trí nhân vật khi va chạm với vật thể khác trong map
