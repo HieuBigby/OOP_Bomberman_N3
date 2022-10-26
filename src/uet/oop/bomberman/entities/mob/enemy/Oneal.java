@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class Oneal extends Enemy {
     public Oneal(int x, int y, Image img) {
         super(x, y, img);
+        this.setCollideBox(this.x + 1, this.y + 3);
     }
 
     @Override

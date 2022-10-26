@@ -6,24 +6,24 @@ import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.net.URL;
 
-public class Sound extends JFrame{
-    public static Clip main;
+public class Sound {
+    public static Clip play;
     public static Sound sound = new Sound();
-    public void playSound(String name){
-        try{
-                URL url = this.getClass().getClassLoader().getResource("sounds/"+name+".wav");
-                assert url != null;
-                AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-                main = AudioSystem.getClip();
-                main.open(audioIn);
-                main.loop(0);
-                main.start();
-                System.out.println(main.getFrameLength());
-//            if (name.equals("main")) {
-//                main.loop(20);
-//            }
 
-        }catch(Exception e){
+    public static boolean isPlaying = false;
+
+
+    public void playSound(String name) {
+        try {
+            URL url = this.getClass().getClassLoader().getResource("sounds/" + name + ".wav");
+            assert url != null;
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            play = AudioSystem.getClip();
+            play.open(audioIn);
+            play.loop(0);
+            play.start();
+            isPlaying = true;
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

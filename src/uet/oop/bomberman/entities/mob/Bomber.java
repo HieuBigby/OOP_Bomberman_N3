@@ -13,7 +13,9 @@ import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Item.Item;
 import uet.oop.bomberman.entities.tile.Item.SpeedItem;
 import uet.oop.bomberman.entities.tile.Item.WallPassItem;
+import uet.oop.bomberman.entities.tile.Portal;
 import uet.oop.bomberman.entities.tile.Tile;
+import uet.oop.bomberman.graphics.Sound;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
@@ -23,7 +25,9 @@ public class Bomber extends Mob {
 
     public boolean moveOutOfBomb = true;
 
+
     public static boolean wallPass = false;
+    public static boolean soundCompletePLayed = false;
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
@@ -96,6 +100,13 @@ public class Bomber extends Mob {
 //        collision = false;
         for (Entity obj : tiles) {
             if(obj instanceof Grass) continue;
+            if(obj instanceof Portal){
+                if(!soundCompletePLayed){
+                    Sound.sound.playSound("complete");
+                    soundCompletePLayed = true;
+                    return false;
+                }
+            }
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
 //                collision = true;
 

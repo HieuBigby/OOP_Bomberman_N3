@@ -194,9 +194,6 @@ public abstract class Mob extends Entity {
                 }
             }
         }
-        if(this instanceof Oneal){
-            System.out.println("Oneal slide");
-        }
     }
 
     public boolean isGoUp() {

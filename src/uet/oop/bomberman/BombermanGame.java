@@ -34,9 +34,16 @@ public class BombermanGame extends Application {
 
     public static int BOMBER_SPEED = 2;
 
-    public static int remainBomb = 30;
-    public static int remainTime = 120;
+    private boolean soundLosePlayed = false;
+
+    public static int remainBomb = 50;
+    public static int remainTime = 180;
+
+    public static int bomberLife = 3;
     private long previousTime = 0;
+
+    public static String statusGame = "new";
+
     private GraphicsContext gc;
     private Canvas canvas;
     private ArrayList<Enemy> enemies = new ArrayList<>();
@@ -92,7 +99,13 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                if (Menu.menu.status == "playing" && remainTime > 0) {
+                if (!soundLosePlayed && (remainTime == 0 || bomberLife == 0)) {
+                    Sound.sound.playSound("lose");
+                    root.getChildren().add(backgroundView);
+                    soundLosePlayed = true;
+                    statusGame = "lose";
+                }
+                if (statusGame != "pause" && statusGame != "new") {
                     render(camera);
                     update();
                     timeCounter();
@@ -255,6 +268,7 @@ public class BombermanGame extends Application {
             }else {
                 bomberman = new Bomber(16, 7, Sprite.player_right.getFxImage());
             }
+            bomberLife --;
             Map.Instance.bomber = bomberman;
         }
         items.remove(bomberman.checkUseItem(items));
@@ -298,7 +312,10 @@ public class BombermanGame extends Application {
 
         if (!bomberman.destroyFinished)
             bomberman.render(gc);
-
+        if(enemies.size() == 0){
+            Portal portal = new Portal(29,15,Sprite.portal.getFxImage());
+            tiles.add(portal);
+        }
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
             enemy.render(gc);

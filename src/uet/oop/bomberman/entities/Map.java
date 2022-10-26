@@ -9,13 +9,6 @@ import java.util.ArrayList;
 
 public class Map {
     public static Map Instance = new Map();
-//    public static Map getInstance() {
-//        if(Instance == null) {
-//            Instance = new Map();
-//        }
-//
-//        return Instance;
-//    }
     public char[][] board;
     public ArrayList<Tile> stillObjects;
     public ArrayList<Enemy> enemies;

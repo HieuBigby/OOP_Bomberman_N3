@@ -55,7 +55,7 @@ public class Bomb extends Tile {
                     , Sprite.bomb_exploded2, state, 60).getFxImage();
             renderFlame(gc, doubleExplode);
             if(!soundPlayed) {
-                Sound.sound.playSound("bomb_explosion");
+                Sound.sound.playSound("exploded");
                 soundPlayed = true;
             }
         } else {
