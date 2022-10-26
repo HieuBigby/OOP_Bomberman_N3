@@ -102,17 +102,14 @@ public class Bomber extends Mob {
     public boolean checkCollision(ArrayList<Tile> tiles){
 //        collision = false;
         for (Entity obj : tiles) {
-            if(obj instanceof Portal){
-                if(!soundCompletePLayed){
-                    Sound.sound.playSound("complete");
-                    soundCompletePLayed = true;
-                }
+            if(obj instanceof Portal
+            && this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+                BombermanGame.statusGame = "win";
             }
             if(obj instanceof Grass) continue;
 
             if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
 //                collision = true;
-
                 if(wallPass && obj instanceof Brick){
 //                    collision = false;
                     return false;

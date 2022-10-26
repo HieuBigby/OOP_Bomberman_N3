@@ -33,6 +33,7 @@ public class BombermanGame extends Application {
     public int currentLevel, mapWidth, mapHeight;
 
     private boolean soundLosePlayed = false;
+    private boolean soundCompletePlayed = false;
 
     public static int remainBomb = 50;
     public static int remainTime = 180;
@@ -41,6 +42,7 @@ public class BombermanGame extends Application {
     private long previousTime = 0;
 
     public static String statusGame = "new";
+    public static int level = 1;
 
     private GraphicsContext gc;
     private Canvas canvas;
@@ -59,7 +61,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) {
         // Tạo map
-        createMap();
+        createMap(1);
 
         Map.Instance.stillObjects = this.tiles;
         Map.Instance.enemies = this.enemies;
@@ -83,9 +85,6 @@ public class BombermanGame extends Application {
         // Tao scene
         Scene scene = new Scene(root);
         setInput(scene);
-        Camera camera = new PerspectiveCamera();
-        scene.setCamera(camera);
-        scene.setFill(Color.SILVER);
 
         // Them scene vao stage
         stage.setScene(scene);
@@ -104,8 +103,16 @@ public class BombermanGame extends Application {
                     statusGame = "lose";
                     restart();
                 }
+                if (statusGame.equals("win")) {
+                    if (!soundCompletePlayed) {
+                        Sound.sound.playSound("complete");
+                        soundCompletePlayed = true;
+                    }
+                    root.getChildren().add(backgroundView);
+                    restart();
+                }
                 if (statusGame != "pause" && statusGame != "new") {
-                    render(camera);
+                    render();
                     update();
                     timeCounter();
                 }
@@ -114,12 +121,13 @@ public class BombermanGame extends Application {
         timer.start();
     }
 
-    public void restart(){
+    public void restart() {
         remainBomb = 50;
         remainTime = 180;
 
         bomberLife = 3;
         soundLosePlayed = false;
+        soundCompletePlayed = false;
 
         enemies = new ArrayList<>();
         bombs = new ArrayList<>();
@@ -131,8 +139,10 @@ public class BombermanGame extends Application {
 
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         Map.Instance.bomber = this.bomberman;
-
-        createMap();
+        if (statusGame == "win" && level < 2) {
+            level++;
+        }
+        createMap(level);
     }
 
 
@@ -153,7 +163,7 @@ public class BombermanGame extends Application {
                     bomberman.setGoRight();
                     break;
                 case SPACE:
-                    if (!Map.Instance.hasBomb() || remainBomb > 0) {
+                    if (!Map.Instance.hasBomb() && remainBomb > 0) {
                         tiles.add(bomberman.setBomb(gc));
                         remainBomb--;
                     }
@@ -179,8 +189,8 @@ public class BombermanGame extends Application {
         });
     }
 
-    public void createMap() {
-        try (Scanner scanner = new Scanner(new File("res/levels/Level1.txt"))) {
+    public void createMap(int level) {
+        try (Scanner scanner = new Scanner(new File("res/levels/Level" + level + ".txt"))) {
             currentLevel = scanner.nextInt();
             mapHeight = scanner.nextInt();
             mapWidth = scanner.nextInt();
@@ -283,27 +293,18 @@ public class BombermanGame extends Application {
 
         if (bomberman.destroyFinished) {
             System.out.println("Xóa bomber cũ bằng bomber mới");
-            if(bomberman.getX() < Sprite.SCALED_SIZE * mapWidth / 2){
+            if (bomberman.getX() < Sprite.SCALED_SIZE * mapWidth / 2) {
                 bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-            }else {
+            } else {
                 bomberman = new Bomber(16, 7, Sprite.player_right.getFxImage());
             }
-            bomberLife --;
+            bomberLife--;
             Map.Instance.bomber = bomberman;
         }
         items.remove(bomberman.checkUseItem(items));
     }
 
-    public void render(Camera camera) {
-
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        if (bomberman.getX() > Sprite.SCALED_SIZE * mapWidth / 2
-        && bomberman.getX() < Sprite.SCALED_SIZE * mapWidth * 3/4) {
-            camera.translateXProperty().set(bomberman.getX() - Sprite.SCALED_SIZE * mapWidth / 2);
-        }
-        if(statusGame == "lose"){
-            camera.translateXProperty().set(0);
-        }
+    public void render() {
 //        tiles.forEach(g -> g.render(gc));
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
@@ -336,8 +337,8 @@ public class BombermanGame extends Application {
 
         if (!bomberman.destroyFinished)
             bomberman.render(gc);
-        if(enemies.size() == 0){
-            Portal portal = new Portal(29,15,Sprite.portal.getFxImage());
+        if (enemies.size() == 0) {
+            Portal portal = new Portal(29, 15, Sprite.portal.getFxImage());
             tiles.add(portal);
         }
         for (int i = 0; i < enemies.size(); i++) {
@@ -350,11 +351,12 @@ public class BombermanGame extends Application {
             }
         }
     }
-    public void timeCounter(){
+
+    public void timeCounter() {
         long now = System.currentTimeMillis();
-        if(now - previousTime > 1000){
+        if (now - previousTime > 1000) {
             previousTime = System.currentTimeMillis();
-            remainTime --;
+            remainTime--;
         }
     }
 }

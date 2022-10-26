@@ -18,22 +18,22 @@ public class Menu {
     public static boolean muteSound = false;
 
     public static void createMenu(Group root,ImageView image) {
-        level = new Text("Level: 1");
+        level = new Text("");
         level.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         level.setFill(Color.WHITE);
         level.setX(416);
         level.setY(20);
-        life = new Text("Life: 3");
+        life = new Text("");
         life.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         life.setFill(Color.WHITE);
         life.setX(512);
         life.setY(20);
-        bomb = new Text("Bombs: 20");
+        bomb = new Text("");
         bomb.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         bomb.setFill(Color.WHITE);
         bomb.setX(608);
         bomb.setY(20);
-        time = new Text("Times: 120");
+        time = new Text("");
         time.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         time.setFill(Color.WHITE);
         time.setX(704);
@@ -88,11 +88,12 @@ public class Menu {
     }
 
     public static void update() {
-        level.setText("Level: 1" );
+        level.setText("Level: "+ BombermanGame.level);
         life.setText("Life: "+ BombermanGame.bomberLife);
         bomb.setText("Bombs: " + BombermanGame.remainBomb);
         time.setText("Times: " + BombermanGame.remainTime);
-        if(BombermanGame.statusGame == "lose"){
+        if(BombermanGame.statusGame.equals("lose")
+        || BombermanGame.statusGame.equals("win")){
             Image img = new Image("image/newGame.png");
             status.setImage(img);
             BombermanGame.statusGame = "new";
