@@ -7,10 +7,8 @@ import uet.oop.bomberman.entities.tile.Item.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Brick extends Tile {
-//    public boolean destroy = false;
-//    public boolean destroyFinished = false;
-//    public int destroyTime = 50;
-    public ItemType hiddenItem;
+    private ItemType hiddenItem;
+
     public Brick(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -22,7 +20,7 @@ public class Brick extends Tile {
 
     @Override
     public void update() {
-        if(destroy) {
+        if (destroy) {
             if (remainTime > 0) {
                 remainTime--;
 //                System.out.println("Thời gian còn lại của brick: " + remnantTime);
@@ -32,18 +30,21 @@ public class Brick extends Tile {
         }
     }
 
-    public Item revealHiddenItem(){
-        if(hiddenItem == null) {
+    /**
+     * Hiện item khi bomber phá tường.
+     */
+    public Item revealHiddenItem() {
+        if (hiddenItem == null) {
             return null;
         }
         BoxPos boardPos = getBoardPos();
-        switch (hiddenItem){
+        switch (hiddenItem) {
             case BombItem:
                 return new BombItem(boardPos.y, boardPos.x, Sprite.powerup_bombs.getFxImage());
             case SpeedItem:
                 return new SpeedItem(boardPos.y, boardPos.x, Sprite.powerup_speed.getFxImage());
             case FlameItem:
-                return new FlameItem(boardPos.y, boardPos.x,  Sprite.powerup_flames.getFxImage());
+                return new FlameItem(boardPos.y, boardPos.x, Sprite.powerup_flames.getFxImage());
             case WallPassItem:
                 return new WallPassItem(boardPos.y, boardPos.x, Sprite.powerup_wallpass.getFxImage());
             default:
@@ -52,16 +53,13 @@ public class Brick extends Tile {
     }
 
 
-
     @Override
     public void render(GraphicsContext gc) {
-        if(destroy)
-        {
+        if (destroy) {
 //            System.out.println("Đang chạy animation phá hủy: " + state);
             this.img = Sprite.movingSprite(Sprite.brick_exploded, Sprite.brick_exploded1
                     , Sprite.brick_exploded2, state, 60).getFxImage();
         }
-//        gc.drawImage(Sprite.grass.getFxImage(), this.x, this.y);
         super.render(gc);
     }
 }

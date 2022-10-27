@@ -16,6 +16,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 
 public class Oneal extends Enemy {
+
     public Oneal(int x, int y, Image img) {
         super(x, y, img);
         this.setCollideBox(this.x + 1, this.y + 3);
@@ -25,7 +26,6 @@ public class Oneal extends Enemy {
     @Override
     public void moveEnemy() {
         int[] start = new int[]{getCenterBoxPos().getY() / 32, getCenterBoxPos().getX() / 32};
-//        int[] end = new int[]{bomberman.getCenterBoxPos().getY() / 32, bomberman.getCenterBoxPos().getX() / 32};
         int[] end = Map.Instance.getBomberPosition();
         int[] result = BFS.shortestPath(Map.Instance.board, start, end);
         if (!result.equals(start)) {
@@ -43,8 +43,6 @@ public class Oneal extends Enemy {
 
     @Override
     public void update() {
-//        state++;
-//        if (state > 100) state = 0;
         super.update();
         if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.oneal_left1, Sprite.oneal_left2, Sprite.oneal_left3, state, 50).getFxImage();
@@ -58,7 +56,7 @@ public class Oneal extends Enemy {
 
     @Override
     public void render(GraphicsContext gc) {
-        if(destroy){
+        if (destroy) {
             setImg(Sprite.oneal_dead.getFxImage());
         }
         super.render(gc);
@@ -69,7 +67,7 @@ public class Oneal extends Enemy {
         collision = false;
         for (Entity obj : tiles) {
             if (obj instanceof Grass) continue;
-            if (this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())) {
+            if (this.collideBox.getBoundsInParent().intersects(obj.getCollideBox().getBoundsInParent())) {
                 collision = true;
                 slideWhenCollide(obj);
                 return true;

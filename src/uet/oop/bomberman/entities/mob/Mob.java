@@ -10,23 +10,100 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 
+/**
+ * Class dành cho các đối tương có thể di chuyển
+ */
 public abstract class Mob extends Entity {
-    public BoxPos lastMapPos;
-//    public char lastSymbol;
-    public char symbol;
-    public boolean collision = false;
-    public boolean goUp, goDown, goLeft, goRight;
-    public boolean destroy = false;
-    public boolean destroyFinished = false;
-    public int destroyTime = 50;
+    private BoxPos lastMapPos;
+    protected char symbol;
+    protected boolean collision = false;
+    protected boolean goUp, goDown, goLeft, goRight;
+    protected boolean destroy = false;
+    private boolean destroyFinished = false;
+    protected int destroyTime = 50;
 
 
     public Mob(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         lastMapPos = getBoardPos();
-//        lastSymbol = ' ';
-        // Thu nhỏ collide box để tránh va chạm với vật thể khác ngay khi vào game
     }
+
+    public boolean isDestroy() {
+        return destroy;
+    }
+
+    public boolean isDestroyFinished() {
+        return destroyFinished;
+    }
+
+    public void setGoUp(boolean goUp) {
+        this.goUp = goUp;
+    }
+
+    public void setGoDown(boolean goDown) {
+        this.goDown = goDown;
+    }
+
+    public void setGoLeft(boolean goLeft) {
+        this.goLeft = goLeft;
+    }
+
+    public void setGoRight(boolean goRight) {
+        this.goRight = goRight;
+    }
+
+    public boolean isGoUp() {
+        return goUp;
+    }
+
+    public void setGoUp() {
+        prev = "Up";
+        goLeft = false;
+        goRight = false;
+        goDown = false;
+        goUp = true;
+    }
+
+    public boolean isGoDown() {
+        return goDown;
+    }
+
+    public void setGoDown() {
+        prev = "Down";
+        goLeft = false;
+        goRight = false;
+        goDown = true;
+        goUp = false;
+    }
+
+    public boolean isGoLeft() {
+        return goLeft;
+    }
+
+    public void setGoLeft() {
+        prev = "Left";
+        goLeft = true;
+        goRight = false;
+        goDown = false;
+        goUp = false;
+    }
+
+    public boolean isGoRight() {
+        return goRight;
+    }
+
+    public void setGoRight() {
+        prev = "Right";
+        goLeft = false;
+        goRight = true;
+        goDown = false;
+        goUp = false;
+    }
+
+    public void destroy(){
+        this.destroy = true;
+    }
+
     public void move(int dx, int dy) {
 
         if(destroy) return;
@@ -38,6 +115,9 @@ public abstract class Mob extends Entity {
         checkMapPosChange();
     }
 
+    /**
+     * Kiểm tra nếu thay đổi vị trí thì cập nhật lại map
+     */
     public void checkMapPosChange(){
         BoxPos currentMapPos = getBoardPos();
         if(!currentMapPos.equals(lastMapPos)){
@@ -45,12 +125,10 @@ public abstract class Mob extends Entity {
             updateMap(currentMapPos.x, currentMapPos.y);
         }
         lastMapPos = currentMapPos;
-//        lastSymbol = Map.Instance.board[lastMapPos.x][lastMapPos.y];
-//        return true;
     }
 
     /**
-     * cập nhật lại vị trí trên map
+     * Cập nhật lại vị trí trên map
      */
     public void updateMap(int newX, int newY)
     {
@@ -58,7 +136,9 @@ public abstract class Mob extends Entity {
         Map.Instance.board[newX][newY] = symbol;
     }
 
-    // Xử lý di chuyển Mob
+    /**
+     * Xử lý di chuyển
+     */
     public void moveHandler(int speed, ArrayList<Tile> tiles) {
         int dx = 0, dy = 0;
         double lastX = collideBox.getX();
@@ -100,19 +180,25 @@ public abstract class Mob extends Entity {
         }
         move(dx, dy);
     }
-    // Kiểm tra va chạm giữa mob và các thực thể khác
+
+    /**
+     * Kiểm tra va chạm giữa mob và các thực thể khác.
+     */
     public boolean checkCollision(ArrayList<Tile> tiles){
         collision = false;
         for (Entity obj : tiles) {
             if(obj instanceof Grass) continue;
-            if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+            if(this.collideBox.getBoundsInParent().intersects(obj.getCollideBox().getBoundsInParent())){
                 collision = true;
                 return true;
             }
         }
         return false;
-    };
-    // Kiểm tra xem có lối đi trống cho bomber
+    }
+
+    /**
+     * Kiểm tra xem có lối đi trống ở các vị trí lân cận của đối tượng.
+     */
     public boolean isEmptySpace(BoxPos boxPos, AdjacentPos adjacentPos) {
         if(adjacentPos == AdjacentPos.LEFT){
             boxPos.x = (int) (boxPos.x - collideBox.getFitWidth() / 2) - 1;
@@ -134,7 +220,9 @@ public abstract class Mob extends Entity {
                 || Map.Instance.board[normalizedPos.y][normalizedPos.x] == '2');
     }
 
-    // Dịch vị trí nhân vật khi va chạm với vật thể khác trong map
+    /**
+     * Dịch vị trí của đối tượng khi di ch uyểnva chạm với vật thể khác trong map.
+     */
     public void slideWhenCollide(Entity other) {
         BoxPos thisPos = this.getCenterBoxPos();
         BoxPos otherPos = other.getCenterBoxPos();
@@ -191,57 +279,7 @@ public abstract class Mob extends Entity {
         }
     }
 
-    public boolean isGoUp() {
-        return goUp;
-    }
 
-    public void setGoUp() {
-        prev = "Up";
-        goLeft = false;
-        goRight = false;
-        goDown = false;
-        goUp = true;
-    }
-
-    public void setCollision(boolean collision) {
-        this.collision = collision;
-    }
-
-    public boolean isGoDown() {
-        return goDown;
-    }
-
-    public void setGoDown() {
-        prev = "Down";
-        goLeft = false;
-        goRight = false;
-        goDown = true;
-        goUp = false;
-    }
-
-    public boolean isGoLeft() {
-        return goLeft;
-    }
-
-    public void setGoLeft() {
-        prev = "Left";
-        goLeft = true;
-        goRight = false;
-        goDown = false;
-        goUp = false;
-    }
-
-    public boolean isGoRight() {
-        return goRight;
-    }
-
-    public void setGoRight() {
-        prev = "Right";
-        goLeft = false;
-        goRight = true;
-        goDown = false;
-        goUp = false;
-    }
     @Override
     public void update() {
         if(destroy) {
@@ -252,9 +290,5 @@ public abstract class Mob extends Entity {
                 destroyFinished = true;
             }
         }
-    }
-
-    public void destroy(){
-        this.destroy = true;
     }
 }

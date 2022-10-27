@@ -4,9 +4,14 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
 
 public class Tile extends Entity {
-    public int remainTime = 50;
-    public boolean destroy = false;
-    public boolean destroyFinished = false;
+    protected int remainTime = 50;
+    protected boolean destroy = false;
+    protected boolean destroyFinished = false;
+
+    public boolean isDestroyFinished() {
+        return destroyFinished;
+    }
+
     public Tile(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -16,9 +21,7 @@ public class Tile extends Entity {
 
     }
 
-    public void destroy()
-    {
-//        System.out.println("Đã xóa brick");
+    public void destroy() {
         this.destroy = true;
     }
 }

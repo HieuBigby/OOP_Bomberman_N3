@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Balloon extends Enemy {
+
     public Balloon(int x, int y, Image img) {
         super(x, y, img);
         goLeft = true;
@@ -21,8 +22,6 @@ public class Balloon extends Enemy {
 
     @Override
     public void update() {
-//        state++;
-//        if (state > 100) state = 0;
         super.update();
 //        System.out.println("Destroy time: " + destroy);
         if (goLeft || goDown) {
@@ -37,13 +36,15 @@ public class Balloon extends Enemy {
 
     @Override
     public void render(GraphicsContext gc) {
-        if(destroy){
+        if (destroy) {
             setImg(Sprite.balloom_dead.getFxImage());
         }
         super.render(gc);
     }
 
-    // tạo move cho Ballon kiểu đi vòng quanh
+    /**
+     * Tạo move cho Ballon kiểu đi vòng quanh
+     */
     public void moveEnemy() {
         if (collision) {
             int random = ThreadLocalRandom.current().nextInt(0, 4);

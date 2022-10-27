@@ -34,6 +34,9 @@ public class BoxPos {
                 '}';
     }
 
+    /**
+     * Copy vị trí, có thể lấy điểm lân cận của vị trí cần copy.
+     */
     public BoxPos clone(AdjacentPos adjacentPos) {
         int x = this.x;
         int y = this.y;

@@ -5,23 +5,31 @@ import uet.oop.bomberman.entities.mob.Mob;
 import uet.oop.bomberman.graphics.Sound;
 
 public abstract class Enemy extends Mob {
-    public int speed = 1;
-    public boolean soundPLayed = false;
+    protected int speed = 1;
+    private boolean soundPLayed = false;
+
+    public int getSpeed() {
+        return speed;
+    }
+
     public Enemy(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
 
-        // xét collide box cho enemy
+        // Xét collide box cho enemy
         this.collideBox.setFitHeight(30);
         this.collideBox.setFitWidth(30);
 
-        this.setCollideBox(this.x + 1,  this.y + 1);
+        this.setCollideBox(this.x + 1, this.y + 1);
     }
+
     @Override
     public void destroy() {
-        if(!soundPLayed){
+        if (!soundPLayed) {
             Sound.sound.playSound("hitEnemy");
+            soundPLayed = true;
         }
         destroy = true;
     }
+
     public abstract void moveEnemy();
 }

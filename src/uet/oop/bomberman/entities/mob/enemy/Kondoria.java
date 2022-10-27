@@ -10,10 +10,22 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Kondoria extends Enemy{
+public class Kondoria extends Enemy {
+    private boolean isClone = false;
+
+    public boolean isClone() {
+        return isClone;
+    }
+
     public Kondoria(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         setGoLeft();
+        this.symbol = '5';
+    }
+
+    public Kondoria(int xUnit, int yUnit, Image img, boolean isClone) {
+        super(xUnit, yUnit, img);
+        this.isClone = isClone;
     }
 
     @Override
@@ -37,10 +49,17 @@ public class Kondoria extends Enemy{
         }
     }
 
+//    @Override
+//    public void destroy() {
+//        if(!isClone){
+//            System.out.println("Tạo clone");
+//            isClone = true;
+//        }
+//
+//    }
+
     @Override
     public void update() {
-//        state++;
-//        if (state > 100) state = 0;
         super.update();
         if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.kondoria_left1, Sprite.kondoria_left2, Sprite.kondoria_left3, state, 50).getFxImage();
@@ -54,7 +73,7 @@ public class Kondoria extends Enemy{
 
     @Override
     public void render(GraphicsContext gc) {
-        if(destroy){
+        if (destroy) {
             setImg(Sprite.kondoria_dead.getFxImage());
         }
         super.render(gc);

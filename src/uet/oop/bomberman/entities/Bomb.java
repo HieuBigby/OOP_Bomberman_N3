@@ -11,17 +11,19 @@ import static uet.oop.bomberman.entities.BoxPos.clamp;
 
 
 public class Bomb extends Tile {
-    public int explodeTime = 120;
+    private int explodeTime = 120;
+    private boolean exploded = false;
+    private boolean doubleExplode = false;
+    private boolean soundPlayed = false;
+    private boolean bomberOut = false;
 
-    public boolean exploded = false;
-//    public boolean finished = false;
+    public boolean isBomberOut() {
+        return bomberOut;
+    }
 
-    public int flameRendered = 0;
-
-    public boolean hitBomber = false;
-    public boolean doubleExplode = false;
-    public boolean soundPlayed = false;
-    public boolean bomberOut = false;
+    public void setBomberOut(boolean bomberOut) {
+        this.bomberOut = bomberOut;
+    }
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -34,23 +36,22 @@ public class Bomb extends Tile {
 
     @Override
     public void update() {
-        if(explodeTime > 0) {
+        if (explodeTime > 0) {
             explodeTime--;
-            if(!soundPlayed && explodeTime == 20) {
+            if (!soundPlayed && explodeTime == 20) {
                 Sound.sound.playSound("exploded");
                 soundPlayed = true;
             }
 //            System.out.println("Explode time left: " + explodeTime);
-        }
-        else {
+        } else {
 //            System.out.println("Time out");
-            if(!exploded){
+            if (!exploded) {
                 exploded = true;
 //                System.out.println("Exploded");
             }
-            if(remainTime > 0){
+            if (remainTime > 0) {
                 remainTime--;
-            }else{
+            } else {
                 destroyFinished = true;
             }
         }
@@ -58,8 +59,7 @@ public class Bomb extends Tile {
 
     @Override
     public void render(GraphicsContext gc) {
-        super.render(gc);
-        if(exploded) {
+        if (exploded) {
             this.img = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1
                     , Sprite.bomb_exploded2, state, 60).getFxImage();
             renderFlame(gc, doubleExplode);
@@ -67,31 +67,33 @@ public class Bomb extends Tile {
 
             this.img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, state, 60).getFxImage();
         }
-
-        gc.drawImage(img, x, y);
+        super.render(gc);
     }
 
-
-    public void renderFlame(GraphicsContext gc, boolean x2)
-    {
+    /**
+     * Render flame của bomb.
+     */
+    public void renderFlame(GraphicsContext gc, boolean x2) {
         renderFlame(AdjacentPos.LEFT, gc, x2);
         renderFlame(AdjacentPos.RIGHT, gc, x2);
         renderFlame(AdjacentPos.UP, gc, x2);
         renderFlame(AdjacentPos.DOWN, gc, x2);
     }
 
-    public void renderFlame(AdjacentPos adjacentPos, GraphicsContext gc, boolean x2)
-    {
+    /**
+     * Render flame của bomb theo hướng.
+     */
+    public void renderFlame(AdjacentPos adjacentPos, GraphicsContext gc, boolean x2) {
         BoxPos boardPos = getBoardPos();
         BoxPos flamePos = new BoxPos(clamp(boardPos.getX() + (adjacentPos == AdjacentPos.UP ? -1
                 : adjacentPos == AdjacentPos.DOWN ? 1 : 0), 0, Map.Instance.getHeight()),
                 clamp(boardPos.getY() + (adjacentPos == AdjacentPos.LEFT ? -1
-                : adjacentPos == AdjacentPos.RIGHT ? 1 : 0),  0, Map.Instance.getWidth()));
+                        : adjacentPos == AdjacentPos.RIGHT ? 1 : 0), 0, Map.Instance.getWidth()));
 
         BoxPos lastFlamePos = flamePos.clone(adjacentPos);
 
-
-        if(Map.Instance.board[flamePos.x][flamePos.y] != '#') {
+        // Chỉ khi điểm va chạm khác tường thì mới cho render
+        if (Map.Instance.board[flamePos.x][flamePos.y] != '#') {
             Image lastFlameImg;
             Image middleFlameImg;
             switch (adjacentPos) {
@@ -128,41 +130,11 @@ public class Bomb extends Tile {
                 gc.drawImage(lastFlameImg, flamePos.y * Sprite.SCALED_SIZE, flamePos.x * Sprite.SCALED_SIZE);
             }
 
-
-            flameRendered++;
-            if(flameRendered > 4) return;
-
-            Map.Instance.printMap();
-            System.out.println(adjacentPos + " flame: " + flamePos.x + ", " + flamePos.y + " collide with "
-                    + Map.Instance.board[flamePos.x][flamePos.y]);
-
-
-//            if(Map.Instance.board[flamePos.x][flamePos.y] == 'p'){
-//                System.out.println("Bomb trúng bomber");
-//                hitBomber = true;
-//            }
-
+            Map.Instance.removeAt(boardPos.x, boardPos.y);
             Map.Instance.removeAt(flamePos.x, flamePos.y);
-            if(x2){
+            if (x2) {
                 Map.Instance.removeAt(lastFlamePos.x, lastFlamePos.y);
             }
         }
-
-
-
-
-
-
-//        flameRendered++;
-//        if(flameRendered > 4) return;
-
-//        System.out.println(adjacentPos + " flame: " + collidePos.x + ", " + collidePos.y + " collide with "
-//                + Map.Instance.board[collidePos.x][collidePos.y]);
     }
-
-//    public boolean canRenderFlame(BoxPos boardPos){
-//        return Map.Instance.board[boardPos.x][boardPos.y] != '#';
-//    }
-
-
 }

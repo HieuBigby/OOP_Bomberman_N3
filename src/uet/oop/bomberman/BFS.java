@@ -23,19 +23,21 @@ public class BFS {
             return "(" + x + "," + y + ")";
         }
     }
-    public static int[][] convertMap(char[][] matrix){
+
+    public static int[][] convertMap(char[][] matrix) {
         int[][] result = new int[Map.Instance.getHeight()][Map.Instance.getWidth()];
-        for(int i=0; i<matrix.length; i++){
-            for(int j=0; j<matrix[0].length; j++){
-                if(matrix[i][j] == '#'|| matrix[i][j] == '*'){
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] == '#' || matrix[i][j] == '*') {
                     result[i][j] = 0;
-                }else {
+                } else {
                     result[i][j] = 1;
                 }
             }
         }
         return result;
     }
+
     //BFS, Time O(n^2), Space O(n^2)
     public static int[] shortestPath(char[][] matrixChar, int[] start, int[] end) {
         int[][] matrix = convertMap(matrixChar);
@@ -88,13 +90,13 @@ public class BFS {
             do {
                 path.addFirst(p);
             } while ((p = p.prev) != null);
-            if(path.size() >10) {
+            if (path.size() > 10) {
                 return start;
             }
-            if(path.size()>1){
-                int[] result = new int[] {path.get(1).y,path.get(1).x};
+            if (path.size() > 1) {
+                int[] result = new int[]{path.get(1).y, path.get(1).x};
                 return result;
-            }else if(path.size() == 1){
+            } else if (path.size() == 1) {
                 return start;
             }
         }

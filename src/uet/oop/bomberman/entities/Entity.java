@@ -13,14 +13,17 @@ public abstract class Entity {
     protected int y;
     public int state = 0;
 
-    // trạng thái di chuyển
-    public String prev;
+    // Trạng thái di chuyển
+    protected String prev;
 
     protected Image img;
-    public ImageView collideBox;
+    protected ImageView collideBox;
 
+    public ImageView getCollideBox() {
+        return collideBox;
+    }
 
-    //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
+    // Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
     public Entity(int xUnit, int yUnit, Image img) {
         this.x = xUnit * Sprite.SCALED_SIZE;
         this.y = yUnit * Sprite.SCALED_SIZE;
@@ -40,8 +43,7 @@ public abstract class Entity {
                 (int) (this.y + this.collideBox.getBoundsInLocal().getHeight() / 2));
     }
 
-    public BoxPos getBoardPos()
-    {
+    public BoxPos getBoardPos() {
         BoxPos centerPos = getCenterBoxPos();
         return new BoxPos(centerPos.y / Sprite.SCALED_SIZE, centerPos.x / Sprite.SCALED_SIZE);
     }
@@ -56,7 +58,7 @@ public abstract class Entity {
 
     public void render(GraphicsContext gc) {
         state++;
-        if(state > 100) state = 0;
+        if (state > 100) state = 0;
         gc.drawImage(img, x, y);
     }
 
@@ -69,11 +71,5 @@ public abstract class Entity {
     public void setImg(Image img) {
         this.img = img;
     }
-//    public void destroy(){
-//        this.destroy = true;
-//    }
-
-
-
 }
 

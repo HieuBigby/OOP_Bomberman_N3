@@ -12,15 +12,16 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Ghost extends Enemy{
+public class Ghost extends Enemy {
     public Ghost(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         setGoUp();
+        this.symbol = '4';
     }
 
     @Override
     public void moveEnemy() {
-        if (state == 100|| collision) {
+        if (state == 100 || collision) {
             int random = ThreadLocalRandom.current().nextInt(0, 4);
             switch (random) {
                 case 0:
@@ -40,14 +41,12 @@ public class Ghost extends Enemy{
     }
 
     public void update() {
-//        state++;
-//        if(state > 100) state = 0;
         super.update();
-        if(goLeft||goDown){
+        if (goLeft || goDown) {
             Image image = Sprite.movingSprite(Sprite.ghost_left1, Sprite.ghost_left2, Sprite.ghost_left3, state, 50).getFxImage();
             setImg(image);
         }
-        if(goRight||goUp){
+        if (goRight || goUp) {
             Image image = Sprite.movingSprite(Sprite.ghost_right1, Sprite.ghost_right2, Sprite.ghost_right3, state, 50).getFxImage();
             setImg(image);
         }
@@ -55,7 +54,7 @@ public class Ghost extends Enemy{
 
     @Override
     public void render(GraphicsContext gc) {
-        if(destroy){
+        if (destroy) {
             setImg(Sprite.ghost_dead.getFxImage());
         }
         super.render(gc);
@@ -65,10 +64,10 @@ public class Ghost extends Enemy{
     public boolean checkCollision(ArrayList<Tile> tiles) {
         collision = false;
         for (Entity obj : tiles) {
-            if(obj instanceof Grass) continue;
-            if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+            if (obj instanceof Grass) continue;
+            if (this.collideBox.getBoundsInParent().intersects(obj.getCollideBox().getBoundsInParent())) {
                 collision = true;
-                if(obj instanceof Brick){
+                if (obj instanceof Brick) {
                     collision = false;
                     return false;
                 }

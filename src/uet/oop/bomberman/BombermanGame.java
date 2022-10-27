@@ -2,15 +2,12 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.scene.Camera;
 import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.mob.Bomber;
@@ -29,7 +26,6 @@ import java.util.Scanner;
 
 
 public class BombermanGame extends Application {
-
     public int currentLevel, mapWidth, mapHeight;
 
     private boolean soundLosePlayed = false;
@@ -50,8 +46,7 @@ public class BombermanGame extends Application {
     private List<Bomb> bombs = new ArrayList<>();
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Item> items = new ArrayList<>();
-
-    Bomber bomberman;
+    private Bomber bomberman;
 
 
     public static void main(String[] args) {
@@ -63,9 +58,9 @@ public class BombermanGame extends Application {
         // Tạo map
         createMap(1);
 
+        // Tham chiếu đến map
         Map.Instance.stillObjects = this.tiles;
         Map.Instance.enemies = this.enemies;
-//        Map.Instance.getEntityAt(0, 0);
 
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * mapWidth, Sprite.SCALED_SIZE * mapHeight);
@@ -77,11 +72,13 @@ public class BombermanGame extends Application {
         backgroundView.setY(-135);
         backgroundView.setScaleX(0.63);
         backgroundView.setScaleY(0.62);
+
         // Tao root container
         Group root = new Group();
         Menu.menu.createMenu(root, backgroundView);
         root.getChildren().add(canvas);
         root.getChildren().add(backgroundView);
+
         // Tao scene
         Scene scene = new Scene(root);
         setInput(scene);
@@ -163,7 +160,7 @@ public class BombermanGame extends Application {
                     bomberman.setGoRight();
                     break;
                 case SPACE:
-                    if (bomberman.multipleBomb || !Map.Instance.hasBomb() && remainBomb > 0) {
+                    if (bomberman.canPlaceMultipleBomb() || !Map.Instance.hasBomb() && remainBomb > 0) {
                         tiles.add(bomberman.setBomb(gc));
                         remainBomb--;
                     }
@@ -174,16 +171,16 @@ public class BombermanGame extends Application {
         scene.setOnKeyReleased(event -> {
             switch (event.getCode()) {
                 case W:
-                    bomberman.goUp = false;
+                    bomberman.setGoUp(false);
                     break;
                 case S:
-                    bomberman.goDown = false;
+                    bomberman.setGoDown(false);
                     break;
                 case A:
-                    bomberman.goLeft = false;
+                    bomberman.setGoLeft(false);
                     break;
                 case D:
-                    bomberman.goRight = false;
+                    bomberman.setGoRight(false);
                     break;
             }
         });
@@ -216,24 +213,16 @@ public class BombermanGame extends Application {
                     }
                     tiles.add((Tile) object);
                     if (entityName == 's') {
-//                        SpeedItem speedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
-//                        items.add(speedItem);
                         tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.SpeedItem));
                     }
                     if (entityName == 'b') {
-//                        BombItem bombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
-//                        items.add(bombItem);
                         tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.BombItem));
 
                     }
                     if (entityName == 'f') {
-//                        FlameItem flameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
-//                        items.add(flameItem);
                         tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.FlameItem));
                     }
                     if (entityName == 'w') {
-//                        WallPassItem wallPassItem = new WallPassItem(j, i, Sprite.powerup_wallpass.getFxImage());
-//                        items.add(wallPassItem);
                         tiles.add(new Brick(j, i, Sprite.brick.getFxImage(), ItemType.WallPassItem));
                     }
                     if (entityName == '1') {
@@ -264,35 +253,23 @@ public class BombermanGame extends Application {
         }
     }
 
-    public void removeBomber() {
-//        System.out.println("Xóa bomber");
-        bomberman.destroy();
-    }
-
     public void update() {
         Menu.menu.update();
         for (Tile tile : tiles) {
             tile.update();
-            if (tile instanceof Bomb) {
-//                if (((Bomb) tile).hitBomber) {
-//                    removeBomber();
-//                }
-            }
         }
         for (Enemy enemy : enemies) {
             enemy.update();
             enemy.moveEnemy();
-            enemy.moveHandler(enemy.speed, tiles);
-
+            enemy.moveHandler(enemy.getSpeed(), tiles);
         }
 
         bomberman.update();
-
-        bomberman.moveHandler(bomberman.speed, tiles);
+        bomberman.moveHandler(bomberman.getSpeed(), tiles);
         bomberman.meetingEnemy(enemies);
 
-        if (bomberman.destroyFinished) {
-            System.out.println("Xóa bomber cũ bằng bomber mới");
+        if (bomberman.isDestroyFinished()) {
+//            System.out.println("Xóa bomber cũ bằng bomber mới");
             if (bomberman.getX() < Sprite.SCALED_SIZE * mapWidth / 2) {
                 bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
             } else {
@@ -305,14 +282,13 @@ public class BombermanGame extends Application {
     }
 
     public void render() {
-//        tiles.forEach(g -> g.render(gc));
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
             tile.render(gc);
             if (tile instanceof Brick) {
                 Brick brick = (Brick) tile;
                 // Phá tường thay bằng cỏ
-                if (brick.destroyFinished) {
+                if (brick.isDestroyFinished()) {
                     tiles.remove(brick);
                     i--;
                     tiles.add(new Grass(brick.getBoardPos().getY(), brick.getBoardPos().getX()
@@ -326,7 +302,7 @@ public class BombermanGame extends Application {
             }
             if (tile instanceof Bomb) {
                 Bomb bomb = (Bomb) tile;
-                if (bomb.destroyFinished) {
+                if (bomb.isDestroyFinished()) {
                     tiles.remove(bomb);
                     i--;
                 }
@@ -335,19 +311,29 @@ public class BombermanGame extends Application {
         items.forEach(g -> g.render(gc));
 
 
-        if (!bomberman.destroyFinished)
+        if (!bomberman.isDestroyFinished())
             bomberman.render(gc);
+
         if (enemies.size() == 0) {
             Portal portal = new Portal(29, 15, Sprite.portal.getFxImage());
             tiles.add(portal);
         }
+
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
             enemy.render(gc);
-            if (enemy.destroyFinished) {
+//            if(enemy instanceof Kondoria){
+//                if(enemy.isDestroy()){
+//                    if(((Kondoria) enemy).isClone()) continue;
+//                    BoxPos destroyPos = enemy.getBoardPos();
+//                    Kondoria cloneKondoria = new Kondoria(destroyPos.y, destroyPos.x, Sprite.kondoria_left1.getFxImage(), true);
+//                    enemies.add(cloneKondoria);
+//                    Map.Instance.enemies.add(cloneKondoria);
+//                }
+//            }
+            if (enemy.isDestroyFinished()) {
                 enemies.remove(enemy);
                 i--;
-
             }
         }
     }

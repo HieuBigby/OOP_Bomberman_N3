@@ -17,7 +17,7 @@ public class Menu {
     public static Text level, life, bomb, time;
     public static boolean muteSound = false;
 
-    public static void createMenu(Group root,ImageView image) {
+    public static void createMenu(Group root, ImageView image) {
         level = new Text("");
         level.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         level.setFill(Color.WHITE);
@@ -60,16 +60,16 @@ public class Menu {
         root.getChildren().add(pane);
 
         status.setOnMouseClicked(event -> {
-            if(BombermanGame.statusGame == "new"){
+            if (BombermanGame.statusGame == "new") {
                 root.getChildren().remove(image);
                 BombermanGame.statusGame = "playing";
                 Image img = new Image("image/pauseGame.png");
                 status.setImage(img);
-            }else if(BombermanGame.statusGame == "playing"){
+            } else if (BombermanGame.statusGame == "playing") {
                 Image img = new Image("image/playGame.png");
                 status.setImage(img);
                 BombermanGame.statusGame = "pause";
-            }else if(BombermanGame.statusGame == "pause"){
+            } else if (BombermanGame.statusGame == "pause") {
                 Image img = new Image("image/pauseGame.png");
                 status.setImage(img);
                 BombermanGame.statusGame = "playing";
@@ -77,10 +77,10 @@ public class Menu {
             update();
         });
         sound.setOnMouseClicked(event -> {
-            if(muteSound){
+            if (muteSound) {
                 muteSound = false;
                 sound.setImage(new Image("image/soundOn.png"));
-            }else {
+            } else {
                 muteSound = true;
                 sound.setImage(new Image("image/soundMute.png"));
             }
@@ -88,12 +88,12 @@ public class Menu {
     }
 
     public static void update() {
-        level.setText("Level: "+ BombermanGame.level);
-        life.setText("Life: "+ BombermanGame.bomberLife);
+        level.setText("Level: " + BombermanGame.level);
+        life.setText("Life: " + BombermanGame.bomberLife);
         bomb.setText("Bombs: " + BombermanGame.remainBomb);
         time.setText("Times: " + BombermanGame.remainTime);
-        if(BombermanGame.statusGame.equals("lose")
-        || BombermanGame.statusGame.equals("win")){
+        if (BombermanGame.statusGame.equals("lose")
+                || BombermanGame.statusGame.equals("win")) {
             Image img = new Image("image/newGame.png");
             status.setImage(img);
             BombermanGame.statusGame = "new";

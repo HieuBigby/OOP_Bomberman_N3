@@ -5,5 +5,4 @@ public enum AdjacentPos {
     RIGHT,
     UP,
     DOWN,
-    NULL
 }
