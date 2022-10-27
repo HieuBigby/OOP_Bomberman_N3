@@ -8,14 +8,8 @@ import uet.oop.bomberman.entities.BoxPos;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Map;
 import uet.oop.bomberman.entities.mob.enemy.Enemy;
-import uet.oop.bomberman.entities.tile.Brick;
-import uet.oop.bomberman.entities.tile.Grass;
-import uet.oop.bomberman.entities.tile.Item.FlameItem;
-import uet.oop.bomberman.entities.tile.Item.Item;
-import uet.oop.bomberman.entities.tile.Item.SpeedItem;
-import uet.oop.bomberman.entities.tile.Item.WallPassItem;
-import uet.oop.bomberman.entities.tile.Portal;
-import uet.oop.bomberman.entities.tile.Tile;
+import uet.oop.bomberman.entities.tile.*;
+import uet.oop.bomberman.entities.tile.Item.*;
 import uet.oop.bomberman.graphics.Sound;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -30,6 +24,7 @@ public class Bomber extends Mob {
 
     public boolean wallPass = false;
     public boolean flameX2 = false;
+    public boolean multipleBomb = false;
     public static boolean soundCompletePLayed = false;
 
     public Bomber(int x, int y, Image img) {
@@ -45,11 +40,11 @@ public class Bomber extends Mob {
 
     }
 
-    @Override
-    public void setCollision(boolean collision) {
-        super.setCollision(collision);
-        moveOutOfBomb = !collision;
-    }
+//    @Override
+//    public void setCollision(boolean collision) {
+//        super.setCollision(collision);
+//        moveOutOfBomb = !collision;
+//    }
 
 //    public void currentlyCollideWithBomb()
 
@@ -96,50 +91,92 @@ public class Bomber extends Mob {
         this.y += dy;
 
         setCollideBox(this.x + 1, this.y + 3);
-        mapPosChange();
+        checkMapPosChange();
     }
     @Override
-    public boolean checkCollision(ArrayList<Tile> tiles){
-//        collision = false;
+    public boolean checkCollision(ArrayList<Tile> tiles) {
+        collision = false;
+        boolean collideWithWall = false;
+        boolean collideWithBrick = false;
+        boolean collideWithBoom = false;
+        Wall wallObj = null;
+
         for (Entity obj : tiles) {
-            if(obj instanceof Portal
-            && this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+            if (obj instanceof Portal
+                    && this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())) {
                 BombermanGame.statusGame = "win";
             }
-            if(obj instanceof Grass) continue;
+            if (obj instanceof Grass) continue;
 
-            if(this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())){
+            if (this.collideBox.getBoundsInParent().intersects(obj.collideBox.getBoundsInParent())) {
 //                collision = true;
-                if(wallPass && obj instanceof Brick){
+//                if(wallPass && obj instanceof Brick){
+//                    System.out.println("Chạm brick");
 //                    collision = false;
-                    return false;
+////                    return false;
+//                }
+
+                if (obj instanceof Brick) {
+                    System.out.println("Cham brick");
+                    collideWithBrick = true;
+//                    if(wallPass) return false;
+//                    return true;
                 }
-                if(obj instanceof Bomb)
-                {
+
+                if (obj instanceof Wall) {
+                    System.out.println("Chạm wall");
+                    collideWithWall = true;
+                    wallObj = (Wall) obj;
+//                    slideWhenCollide(obj);
+//                    return true;
+                }
+
+
+                if (obj instanceof Bomb) {
+                    collideWithBoom = true;
 //                        System.out.println("Va chạm với bomb");
-                    System.out.println("Bomber chạy ra khỏi bomb: " + moveOutOfBomb);
+//                    System.out.println("Bomber chạy ra khỏi bomb: " + moveOutOfBomb);
                     // Chưa chạy ra khỏi bomb là chưa có va chạm
-                    if(moveOutOfBomb)
-                    {
-                        return true;
-                    }
-                    moveOutOfBomb = false;
-                    return false;
+//                    if(moveOutOfBomb)
+//                    {
+//                        return true;
+//                    }
+//                    moveOutOfBomb = false;
+//                    return false;
                 }
-                slideWhenCollide(obj);
 
-                return true;
+//                if(collision)
+//                    slideWhenCollide(obj);
 
-            }
-            else
-            {
-                if(obj instanceof Bomb)
+//                return true;
+//                return true;
+            } else {
+                if (obj instanceof Bomb) {
+                    Bomb bomb = (Bomb) obj;
+                    if (!bomb.bomberOut) {
                         moveOutOfBomb = true;
+                        bomb.bomberOut = true;
+                    }
+                }
             }
-
+        }
+        if (collideWithWall) {
+            if (wallObj != null)
+                slideWhenCollide(wallObj);
+            return true;
+        }
+        if (collideWithBrick && !wallPass) return true;
+        if (collideWithBoom) {
+            if (moveOutOfBomb) {
+                return true;
+            }
+            moveOutOfBomb = false;
+            return false;
         }
         return false;
     }
+
+
     public boolean meetingEnemy(List<Enemy> enemies) {
         for(Enemy enemy : enemies) {
             if(this.collideBox.getBoundsInParent().intersects(enemy.collideBox.getBoundsInParent())){
@@ -163,6 +200,10 @@ public class Bomber extends Mob {
                 if(obj instanceof FlameItem)
                 {
                     this.flameX2 = true;
+                }
+                if(obj instanceof BombItem)
+                {
+                    this.multipleBomb = true;
                 }
                 return obj;
             }

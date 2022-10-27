@@ -163,7 +163,7 @@ public class BombermanGame extends Application {
                     bomberman.setGoRight();
                     break;
                 case SPACE:
-                    if (!Map.Instance.hasBomb() && remainBomb > 0) {
+                    if (bomberman.multipleBomb || !Map.Instance.hasBomb() && remainBomb > 0) {
                         tiles.add(bomberman.setBomb(gc));
                         remainBomb--;
                     }

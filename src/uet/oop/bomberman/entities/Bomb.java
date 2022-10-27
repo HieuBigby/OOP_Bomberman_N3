@@ -21,6 +21,7 @@ public class Bomb extends Tile {
     public boolean hitBomber = false;
     public boolean doubleExplode = false;
     public boolean soundPlayed = false;
+    public boolean bomberOut = false;
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -69,7 +70,6 @@ public class Bomb extends Tile {
 
         gc.drawImage(img, x, y);
     }
-
 
 
     public void renderFlame(GraphicsContext gc, boolean x2)
